@@ -1,5 +1,6 @@
 import numpy
 import csv
+from collections import Counter
 features = []
 
 def getStrFeatVal(arraydata, featureArray,subfeat):
@@ -11,6 +12,9 @@ def getStrFeatVal(arraydata, featureArray,subfeat):
 	featIdx = [featureArray.index(x) for x in subfeat]
 	tmpArray = list(arraydata[:, featIdx])
 	return ['-'.join(x) for x in tmpArray]
+
+def function():
+	pass
 
 with open('dating_small.csv', 'rb') as f:
 	mycsv = csv.reader(f)
@@ -35,3 +39,7 @@ rStrVal = ['_'.join(x) for x in rcorpus]
 print getStrFeatVal(mycsv,features,sfeature.extend(['distance']))
 
 
+sids = getStrFeatVal(mycsv,features,['sender']))
+countSID = Counter(sids)
+singsid = [x for x in countSID]
+sidCounts = [countSID[x] for x in singsid]
