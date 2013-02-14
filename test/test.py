@@ -30,7 +30,8 @@ sfeatIdx = [features.index(x) for x in sfeature]
 rfeatIdx = [features.index(x) for x in rfeature]
 
 mycsv = numpy.array(mycsv[1:])
-
+"""
+# change features to string for sender and receiver
 scorpus = list(mycsv[:, sfeatIdx])
 sStrVal = ['-'.join(x) for x in scorpus]
 
@@ -38,25 +39,49 @@ rcorpus = list(mycsv[:, rfeatIdx])
 rStrVal = ['_'.join(x) for x in rcorpus]
 sdistance = sfeature+['distance']
 #getStrFeatVal(mycsv,features,sdistance)
-
+"""
 def countCommu(dataarray, feats, sfeats, rfeats):
 	#use dictionary {}, similar to js object
 	commu = {}
+	doc_group = {}
 	sidx = feats.index('sender')
 	ridx = feats.index('receiver')
+	sfeaIdx = [feats.index(x) for x in sfeats]
+	rfeaIdx = [feats.index(x) for x in rfeats]	
 	for i in xrange(len(dataarray)):
 		sid = dataarray[i][sidx]
 		rid = dataarray[i][ridx]
 		#cannot use if commu[sid] as js. need to use 'in' to check the key
 		if not sid in commu:
-			commu[sid] ={}
-		if not rid in commu[sid]:
-			commu[sid][rid]={count:0}
-		commu[sid][rid][count] +=1
+			commu[sid] ={'rec':{}}
+			commu[sid]['group'] = '_'.join(list(dataarray[i][sfeaIdx]))
+		"""
+		if not rid in commu:
+			commu[rid] ={'rec':{}}
+			commu[rid]['group'] = '_'.join(list(dataarray[i][rfeaIdx]))
+		"""
+		if not rid in commu[sid]['rec']:
+			commu[sid]['rec'][rid]={'count':0}
+			commu[sid]['rec'][rid]['group'] = '_'.join(list(dataarray[i][rfeaIdx]))
+			#commu[sid]['rec'][rid]['rpl'] = 0
+		commu[sid]['rec'][rid]['count'] +=1
 	return commu
-
+"""
 sids = getStrFeatVal(mycsv,features,['sender','receiver'])
 countSID = Counter(sids)
 print countSID
 singsid = [x for x in countSID]
 sidCounts = [countSID[x] for x in singsid]
+"""
+cc = countCommu(mycsv, features, sfeature, rfeature)
+keys = [x for x in cc]
+for i in xrange(1):
+	print keys[i], cc[keys[i]]
+	
+with open('data.csv','wb') as csvfile:
+	for x in cc:
+		row = x+'\t'+cc[x]['group']+'\t'
+		for i in cc[x]['rec']:
+			row = row + (cc[x]['rec'][i]['group']+' ')*cc[x]['rec'][i]['count']
+		csvfile.write(row+'\n')
+	
