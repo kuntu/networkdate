@@ -96,6 +96,23 @@ def tokenize(text, stopwords=set()):
 
     return [x for x in tokens if x not in stopwords]
 
+def tokenize2(text, stopwords=set()):
+    """
+    Returns a list of tokens corresponding to the specified
+    string with stopwords (if any) removed. This is for data only
+
+    Arguments:
+
+    text -- string to tokenize
+
+    Keyword arguments:
+
+    stopwords -- set of stopwords to remove
+    """
+
+    tokens = re.findall('\S+', text)
+    
+    return [x for x in tokens if x not in stopwords]
 
 def preprocess(filename, stopword_filename=None, idx=None):
     """
@@ -129,8 +146,8 @@ def preprocess(filename, stopword_filename=None, idx=None):
             
         else:
             group = 'group 1'
-
-        corpus.add(fields[0], group, tokenize(fields[-1], stopwords))
+        corpus.add(fields[0], group, tokenize2(fields[-1], stopwords))
+        #corpus.add(fields[0], group, tokenize(fields[-1], stopwords))
 
     return corpus
 
@@ -388,15 +405,17 @@ def print_top_types(corpus, beta, n, num=10):
     
 #corpus = preprocess('ufos.csv','stopwordlist.txt',2)
 #-38824961.0869
-corpus = preprocess('ufos.csv','new_stopwordlist.txt',1)
+corpus = preprocess('data.csv','stopwordlist.txt',1)
 T = len(corpus.group_vocab)
 V= len(corpus.vocab)
 alpha = T
 m=ones(T)/T
 beta = V
 n = ones(V)/V
-
+print len(corpus.vocab)
+for doc, t in corpus:
+    print doc.w
 import cProfile
-cProfile.run('cor=preprocess(\'ufos.csv\',\'new_stopwordlist.txt\',1)')
+#cProfile.run('cor=preprocess(\'ufos.csv\',\'new_stopwordlist.txt\',1)')
 
-#print log_evidence_tokens_1(corpus, V, ones(V) / V)
+print log_evidence_tokens_1(corpus, V, ones(V) / V)
