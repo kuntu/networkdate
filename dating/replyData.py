@@ -82,7 +82,7 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 	return commu
 
 features = []
-with open('../../data/UNI_to_WHOLE.csv', 'rb') as f:
+with open('../../data/UNI_to_WHOLE.txt', 'rb') as f:
 	mycsv = csv.reader(f)
 	mycsv = list(mycsv)
 	features = [x for x in mycsv[0]]
@@ -118,7 +118,12 @@ mycsv = preprocessDataValue(mycsv, features,\
 cc = countCommu(mycsv, features, sfeature, rfeature)
 keys = [x for x in cc]
 for i in xrange(len(cc)):
-	print keys[i], cc[keys[i]]
+	print keys[i],':'
+	for j in cc[keys[i]]:
+		print '\t', cc[keys[i]][j],':', cc[keys[i]][j]['accept']/(cc[keys[i]][j]['accept']+cc[keys[i]][j]['reject'])
+		
+	#print keys[i], cc[keys[i]]
+	pass
 """
 with open('replydata.csv','wb') as csvfile:
 	for x in cc:
