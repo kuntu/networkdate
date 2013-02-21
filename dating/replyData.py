@@ -1,5 +1,6 @@
 import numpy
 import csv
+import operator
 from datafeature import * #self defined class
 from collections import Counter
 
@@ -72,7 +73,7 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 		if not sgroup in commu:
 			commu[sgroup] ={}
 		rgroup = '_'.join(list(dataarray[i][rfeaIdx]))		
-		if not rgroup in commu[sgroup]:
+		if not rgroup in commu[sgroup]:			
 			commu[sgroup][rgroup]={'accept':0.001,'reject':0.001}
 			#commu[sid]['rec'][rid]['rpl'] = 0
 		if dataarray[i][repIdx]=='0':
@@ -117,10 +118,17 @@ mycsv = preprocessDataValue(mycsv, features,\
 
 cc = countCommu(mycsv, features, sfeature, rfeature)
 keys = [x for x in cc]
-for i in xrange(len(cc)):
-	print keys[i],':'
-	for j in cc[keys[i]]:
-		print '\t', cc[keys[i]][j],':', cc[keys[i]][j]['accept']/(cc[keys[i]][j]['accept']+cc[keys[i]][j]['reject'])
+sorting = {}
+for i in xrange(len(keys)):
+	sorting[keys[i]] = len(cc[keys[i]])
+
+sortedkey = sorted(sorting.iteritems(),key = operator.itemgetter(1),reverse=True)
+order = [x[0] for x in sortedkey]
+for i in xrange(10):
+	#sorting[keys[i]]=len(cc[keys[i]])
+	print order[i],':'
+	for j in cc[order[i]]:
+		print '\t', j,':', cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
 		
 	#print keys[i], cc[keys[i]]
 	pass
