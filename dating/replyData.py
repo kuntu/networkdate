@@ -107,14 +107,17 @@ sfeatIdx = [features.index(x) for x in sfeature]
 rfeatIdx = [features.index(x) for x in rfeature]
 #alternative way to set up feature by setting feature value
 
+"""
+organize data here
+"""
 mycsv = numpy.array(mycsv[1:])
-
+#aggregate values
 mycsv = preprocessDataValue(mycsv, features,\
 						 createFeatures(["rage", "rWeight", "rHeight", "sage", \
 										"sWeight"],\
 									 [5,10,5,5,10]))
-									 
-#print mycsv[1:200,features.index("Reply")]
+#mycsv = preprocessDataValue(mycsv, features,\
+#						createFeatures(['rWeight','rHeight','sWeight'], [10,5,10]))
 
 cc = countCommu(mycsv, features, sfeature, rfeature)
 keys = [x for x in cc]
@@ -141,7 +144,14 @@ with open('replydata.csv','wb') as csvfile:
 			(cc[x]['rec'][i]['accept']/(cc[x]['rec'][i]['accept']+cc[x]['rec'][i]['reject'])))
 		csvfile.write(row+'\n')
 """
-def generateCSVData(infile, outfile,givenFields, predictFields,allfields=None):
-	"""
-	generate csv
-	"""
+
+with open('replyFreq.csv','wb') as csvfile:
+	for i in xrange(len(order)):
+		row = order[i]+'\t'+str(len(cc[order[i]]))+'\t'
+		for j in cc[order[i]]:
+			row +=j+':'+('%.5f' % (cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])))+' '
+		#print row
+		csvfile.write(row+'\n')
+print 'done'
+				
+
