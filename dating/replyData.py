@@ -83,7 +83,7 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 	return commu
 
 features = []
-with open('../../data/UNI_to_WHOLE.txt', 'rb') as f:
+with open('../../data/receiveMsg.txt', 'rb') as f:
 	mycsv = csv.reader(f)
 	mycsv = list(mycsv)
 	features = [x for x in mycsv[0]]
