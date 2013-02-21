@@ -99,7 +99,7 @@ sidCounts = [countSID[x] for x in singsid]
 """
 set up features here
 """
-mainfeature = ["age","Weight","PhotoCnt","AnimalSign","NewIncome"]
+mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
 sfeature = ['r'+x for x in mainfeature]
 #rfeature = ['r'+x for x in mainfeature]
 rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
