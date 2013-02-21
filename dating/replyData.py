@@ -99,7 +99,7 @@ sidCounts = [countSID[x] for x in singsid]
 """
 set up features here
 """
-mainfeature = ["age","Weight","Height","PhotoCnt","AnimalSign","NewIncome"]
+mainfeature = ["age","Weight","PhotoCnt","AnimalSign","NewIncome"]
 sfeature = ['r'+x for x in mainfeature]
 #rfeature = ['r'+x for x in mainfeature]
 rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
@@ -112,12 +112,12 @@ organize data here
 """
 mycsv = numpy.array(mycsv[1:])
 #aggregate values
+# mycsv = preprocessDataValue(mycsv, features,\
+# 						 createFeatures(["rage", "rWeight", "rHeight", "sage", \
+# 										"sWeight"],\
+# 									 [5,10,5,5,10]))
 mycsv = preprocessDataValue(mycsv, features,\
-						 createFeatures(["rage", "rWeight", "rHeight", "sage", \
-										"sWeight"],\
-									 [5,10,5,5,10]))
-#mycsv = preprocessDataValue(mycsv, features,\
-#						createFeatures(['rWeight','rHeight','sWeight'], [10,5,10]))
+						createFeatures(['rWeight','sWeight'], [10,10]))
 
 cc = countCommu(mycsv, features, sfeature, rfeature)
 keys = [x for x in cc]
