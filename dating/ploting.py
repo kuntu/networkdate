@@ -19,3 +19,12 @@ def getPreFromString(num,string):
 #read file and get array
 repPre = get_repPre()
 sendPre = get_senderPreference()
+comPre = {}
+for rp in repPre:
+    if rp in sendPre:
+        comPre[rp] = {}
+        print rp, ':'
+        for rp_target in repPre[rp]:
+            if rp_target in sendPre[rp]:
+                comPre[rp][rp_target] = {'recPre':repPre[rp][rp_target],'sendPre':sendPre[rp][rp_target]}
+                print '\t'+comPre[rp][rp_target]

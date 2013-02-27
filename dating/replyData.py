@@ -150,7 +150,7 @@ def get_repPre():
 	order = [x[0] for x in sortedkey]
 	recPreference = {}
 	for i in xrange(len(order)):
-		precPreference[order[i]]={}
+		recPreference[order[i]]={}
 		for j in cc[order[i]]:
 			precPreference[order[i]][j] = cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
 
