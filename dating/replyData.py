@@ -82,59 +82,7 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 			commu[sgroup][rgroup]['accept'] +=1
 	return commu
 
-features = []
-with open('../../data/receiveMsg.txt', 'rb') as f:
-	mycsv = csv.reader(f)
-	mycsv = list(mycsv)
-	features = [x for x in mycsv[0]]
 
-"""
-sids = getStrFeatVal(mycsv,features,['sender','receiver'])
-countSID = Counter(sids)
-print countSID
-singsid = [x for x in countSID]
-sidCounts = [countSID[x] for x in singsid]
-"""
-
-"""
-set up features here
-"""
-mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
-sfeature = ['r'+x for x in mainfeature]
-#rfeature = ['r'+x for x in mainfeature]
-rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
-sfeatIdx = [features.index(x) for x in sfeature]
-rfeatIdx = [features.index(x) for x in rfeature]
-#alternative way to set up feature by setting feature value
-
-"""
-organize data here
-"""
-mycsv = numpy.array(mycsv[1:])
-#aggregate values
-# mycsv = preprocessDataValue(mycsv, features,\
-# 						 createFeatures(["rage", "rWeight", "rHeight", "sage", \
-# 										"sWeight"],\
-# 									 [5,10,5,5,10]))
-mycsv = preprocessDataValue(mycsv, features,\
-						createFeatures(['rWeight','sWeight'], [10,10]))
-
-cc = countCommu(mycsv, features, sfeature, rfeature)
-keys = [x for x in cc]
-sorting = {}
-for i in xrange(len(keys)):
-	sorting[keys[i]] = len(cc[keys[i]])
-
-sortedkey = sorted(sorting.iteritems(),key = operator.itemgetter(1),reverse=True)
-order = [x[0] for x in sortedkey]
-for i in xrange(10):
-	#sorting[keys[i]]=len(cc[keys[i]])
-	print order[i],':'
-	for j in cc[order[i]]:
-		print '\t', j,':', cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
-		
-	#print keys[i], cc[keys[i]]
-	pass
 """
 with open('replydata.csv','wb') as csvfile:
 	for x in cc:
@@ -144,14 +92,67 @@ with open('replydata.csv','wb') as csvfile:
 			(cc[x]['rec'][i]['accept']/(cc[x]['rec'][i]['accept']+cc[x]['rec'][i]['reject'])))
 		csvfile.write(row+'\n')
 """
-
-with open('replyFreq.csv','wb') as csvfile:
-	for i in xrange(len(order)):
-		row = order[i]+'\t'+str(len(cc[order[i]]))+'\t'
-		for j in cc[order[i]]:
-			row +=j+':'+('%.5f' % (cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])))+' '
-		#print row
-		csvfile.write(row+'\n')
-print 'done'
+def print_replydata(fileName,order,cc):
+	with open('../../datareplyFreq.csv','wb') as csvfile:
+		for i in xrange(len(order)):
+			row = order[i]+'\t'+str(len(cc[order[i]]))+'\t'
+			for j in cc[order[i]]:
+				row +=j+':'+('%.5f' % (cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])))+' '
+			#print row
+			csvfile.write(row+'\n')
+	print 'done'
 				
+def get_repPre():
+	features = []
+	with open('../../data/receiveMsg.txt', 'rb') as f:
+		mycsv = csv.reader(f)
+		mycsv = list(mycsv)
+		features = [x for x in mycsv[0]]
+	
+	"""
+	sids = getStrFeatVal(mycsv,features,['sender','receiver'])
+	countSID = Counter(sids)
+	print countSID
+	singsid = [x for x in countSID]
+	sidCounts = [countSID[x] for x in singsid]
+	"""
+	
+	"""
+	set up features here
+	"""
+	mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
+	sfeature = ['r'+x for x in mainfeature]
+	#rfeature = ['r'+x for x in mainfeature]
+	rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
+	sfeatIdx = [features.index(x) for x in sfeature]
+	rfeatIdx = [features.index(x) for x in rfeature]
+	#alternative way to set up feature by setting feature value
+	
+	"""
+	organize data here
+	"""
+	mycsv = numpy.array(mycsv[1:])
+	#aggregate values
+	# mycsv = preprocessDataValue(mycsv, features,\
+	# 						 createFeatures(["rage", "rWeight", "rHeight", "sage", \
+	# 										"sWeight"],\
+	# 									 [5,10,5,5,10]))
+	mycsv = preprocessDataValue(mycsv, features,\
+							createFeatures(['rWeight','sWeight'], [10,10]))
+	
+	cc = countCommu(mycsv, features, sfeature, rfeature)
+	keys = [x for x in cc]
+	sorting = {}
+	for i in xrange(len(keys)):
+		sorting[keys[i]] = len(cc[keys[i]])
+	
+	sortedkey = sorted(sorting.iteritems(),key = operator.itemgetter(1),reverse=True)
+	order = [x[0] for x in sortedkey]
+	recPreference = {}
+	for i in xrange(len(order)):
+		precPreference[order[i]]={}
+		for j in cc[order[i]]:
+			precPreference[order[i]][j] = cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
 
+		pass
+	return recPreference

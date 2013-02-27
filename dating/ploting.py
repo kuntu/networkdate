@@ -1,6 +1,9 @@
 import numpy
 import csv
 import pylab
+from replyData import *
+from senderData import *
+
 #function to build up plotting from the sting
 def getPreFromString(num,string):
     typeArray = []
@@ -14,9 +17,5 @@ def getPreFromString(num,string):
     return typeArray,preference
 
 #read file and get array
-data=[]
-with open('./replyFreq.csv', 'rb') as f:
-    data = csv.reader(f)
-    data = list(data)
-#process the 3rd element and split them into type:
-print data[0]
+repPre = get_repPre()
+sendPre = get_senderPreference()
