@@ -152,7 +152,7 @@ def get_repPre():
 	for i in xrange(len(order)):
 		recPreference[order[i]]={}
 		for j in cc[order[i]]:
-			precPreference[order[i]][j] = cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
+			recPreference[order[i]][j] = cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
 
 		pass
 	return recPreference
