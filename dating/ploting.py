@@ -1,6 +1,6 @@
 import numpy
 import csv
-import pylab
+#import pylab
 from replyData import *
 from senderData import *
 
