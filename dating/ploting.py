@@ -28,4 +28,4 @@ for rp in repPre:
         for rp_target in repPre[rp]:
             if rp_target in sendPre[rp]:
                 comPre[rp][rp_target] = {'recPre':repPre[rp][rp_target],'sendPre':sendPre[rp][rp_target]}
-                print '\t'+comPre[rp][rp_target]
+                print '\t',comPre[rp][rp_target]
