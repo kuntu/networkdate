@@ -120,7 +120,8 @@ def get_senderPreference():
 	"""
 	set up features here
 	"""
-	mainfeature = ["age","Weight","Height","AnimalSign","NewIncome"]
+	#mainfeature = ["age","Weight","Height","AnimalSign","NewIncome"]
+	mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
 	sfeature = ['s'+x for x in mainfeature]
 	#rfeature = ['r'+x for x in mainfeature]
 	rfeature = ["rPhotoCnt","rage","rNewIncome","rWeight"]

@@ -17,8 +17,9 @@ def getPreFromString(num,string):
     return typeArray,preference
 
 #read file and get array
-repPre = get_repPre()
 sendPre = get_senderPreference()
+repPre = get_repPre()
+
 comPre = {}
 for rp in repPre:
     if rp in sendPre:
