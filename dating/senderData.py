@@ -134,8 +134,7 @@ def get_senderPreference():
 	"""
 	mycsv = numpy.array(mycsv[1:])
 	#aggregate values
-	mycsv = preprocessDataValue(mycsv, features,\
-							 createFeatures([ "rWeight",  "sWeight"],[10,10]))
+	mycsv = preprocessDataValue(mycsv, features,createFeatures([ "rWeight",  "sWeight"],[10,10]))
 	#mycsv = preprocessDataValue(mycsv, features,\
 	#						createFeatures(['rWeight','rHeight','sWeight'], [10,5,10]))
 	
