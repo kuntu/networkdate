@@ -1,6 +1,6 @@
 import re, time
 from corpus import *
-from csv import reader
+from csv import reader,DictReader
 from iterview import iterview
 from numpy import argsort, array, cumsum, log, ones, searchsorted, zeros
 from numpy.random import uniform
@@ -97,25 +97,7 @@ def tokenize(text, stopwords=set()):
     return [x for x in tokens if x not in stopwords]
 
 
-def tokenize2(text, stopwords=set()):
-    """
-    Returns a list of tokens corresponding to the specified
-    string with stopwords (if any) removed. This is for data only
-
-    Arguments:
-
-    text -- string to tokenize
-
-    Keyword arguments:
-
-    stopwords -- set of stopwords to remove
-    """
-
-    tokens = re.findall('\S+', text)
-    return [x for x in tokens if x not in stopwords]
-
-
-def preprocess(filename, stopword_filename=None, idx=None):
+def preprocess(filename, srcFeature, tarFeature):
     """
     Preprocesses a CSV file and returns a grouped corpus, where each
     document's group is determined by field number 'idx'. If 'idx' is
@@ -132,22 +114,24 @@ def preprocess(filename, stopword_filename=None, idx=None):
 
     Keyword arguments:
 
-    stopword_filename -- name of file containing stopwords
-    idx -- field number (e.g., 0, 1, ...) of the group
+    srcFeature -- names of feature to classify the owner of preference
+    tarFeature -- feature names to cliassify the target
     """
 
     stopwords = create_stopword_list(stopword_filename)
 
     corpus = GroupedCorpus()
+    Nrepl = 0
+    for fields in DictReader(open(filename), delimiter='\t'):
+        scrVal = [fields[feat] for feat in srcFeature]
+        srcType = '_'.join(scrVal)
 
-    for fields in reader(open(filename), delimiter='\t'):
+        tarVal = [fields[feat] for feat in tarFeature]
+        tarType = '_'.join(tarVal)
 
-        if idx:
-            group = fields[idx]
-        else:
-            group = 'group 1'
-        corpus.add(fields[0], group, tokenize2(fields[-1], stopwords))
-        #corpus.add(fields[0], group, tokenize(fields[-1], stopwords))
+        group = ':'.join([srcType,tarType])
+
+        corpus.add(Nrepl++, group, fields['reply'])
 
     return corpus
 
@@ -337,17 +321,17 @@ def posterior_mean_phis(corpus, beta, n):
         for v in doc.w:
             Nvt[v, t] += 1
             Nt[t] += 1
-
-    phis = zeros((V, T))
-    betas = beta * n
+    
+    phis = zeros((V,T))
+    betas = beta*n
     for t in xrange(T):
-        phis[:, t] = betas
-
-    phis += Nvt
+        phis[:,t] = betas
+        
+    phis +=Nvt
     for t in xrange(T):
-        phis[:, t] /= Nt[t] + beta
+        phis[:,t] /=Nt[t]+beta
     return phis
-    pass  # YOUR CODE GOES HERE
+    pass # YOUR CODE GOES HERE
 
 
 def posterior_mean_theta(corpus, alpha, m):
@@ -405,18 +389,15 @@ def print_top_types(corpus, beta, n, num=10):
     
 #corpus = preprocess('ufos.csv','stopwordlist.txt',2)
 #-38824961.0869
-corpus = preprocess('newdata.csv','stopwordlist.txt',1)
+corpus = preprocess('ufos.csv','new_stopwordlist.txt',1)
 T = len(corpus.group_vocab)
 V= len(corpus.vocab)
 alpha = T
 m=ones(T)/T
 beta = V
 n = ones(V)/V
-print len(corpus.vocab)
-#for doc, t in corpus:
-#    print doc.w
-#import cProfile
-#cProfile.run('cor=preprocess(\'ufos.csv\',\'new_stopwordlist.txt\',1)')
+
+import cProfile
+cProfile.run('cor=preprocess(\'ufos.csv\',\'new_stopwordlist.txt\',1)')
 
 #print log_evidence_tokens_1(corpus, V, ones(V) / V)
-print_top_types(corpus, V, ones(V) / V)
