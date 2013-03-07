@@ -389,7 +389,7 @@ def print_top_types(corpus, beta, n, num=10):
     
 #corpus = preprocess('ufos.csv','stopwordlist.txt',2)
 #-38824961.0869
-corpus = preprocess('receiveMsg.txt',['rHeight','rWeight','rage','rPhotoCnt'],['sHeight','sWeight','sage','sPhotoCnt'])
+corpus = preprocess('../../receiveMsg.txt',['rHeight','rWeight','rage','rPhotoCnt'],['sHeight','sWeight','sage','sPhotoCnt'])
 T = len(corpus.group_vocab)
 V= len(corpus.vocab)
 alpha = T
@@ -398,6 +398,6 @@ beta = V
 n = ones(V)/V
 
 import cProfile
-cProfile.run('cor=preprocess(\'ufos.csv\',\'new_stopwordlist.txt\',1)')
+#cProfile.run('cor=preprocess(\'ufos.csv\',\'new_stopwordlist.txt\',1)')
 
 #print log_evidence_tokens_1(corpus, V, ones(V) / V)
