@@ -118,7 +118,7 @@ def preprocess(filename, srcFeature, tarFeature):
     tarFeature -- feature names to cliassify the target
     """
 
-    stopwords = create_stopword_list(stopword_filename)
+    #stopwords = create_stopword_list(stopword_filename)
 
     corpus = GroupedCorpus()
     Nrepl = 0
@@ -130,8 +130,8 @@ def preprocess(filename, srcFeature, tarFeature):
         tarType = '_'.join(tarVal)
 
         group = ':'.join([srcType,tarType])
-
-        corpus.add(Nrepl++, group, fields['reply'])
+        Nrepl +=1
+        corpus.add(Nrepl, group, fields['reply'])
 
     return corpus
 
@@ -389,7 +389,7 @@ def print_top_types(corpus, beta, n, num=10):
     
 #corpus = preprocess('ufos.csv','stopwordlist.txt',2)
 #-38824961.0869
-corpus = preprocess('ufos.csv','new_stopwordlist.txt',1)
+corpus = preprocess('receiveMsg.txt',['rHeight','rWeight','rage','rPhotoCnt'],['sHeight','sWeight','sage','sPhotoCnt'])
 T = len(corpus.group_vocab)
 V= len(corpus.vocab)
 alpha = T
