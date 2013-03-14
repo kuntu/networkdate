@@ -183,7 +183,7 @@ def print_user_degree():
 		rgroup = '_'.join(list(row[rfeatIdx]))
 		if not rgroup in degrees:
 			degrees[rgroup] = {'accept': 0} # 'reject': 0}
-		if row[features.index('reply')] == 1:
+		if row[features.index('Reply')] == 1:
 			degrees[sgroup].accept +=1
 			degrees[rgroup].accept +=1
 		else:
