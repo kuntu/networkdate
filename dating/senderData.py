@@ -154,3 +154,53 @@ def get_senderPreference():
 			senderPre[order[i]][j] = cc[order[i]][j]['accept']/(cc[order[i]][j]['accept']+cc[order[i]][j]['reject'])
 		pass
 	return senderPre
+
+def print_user_degree():
+	features = []
+	with open('../../data/sendMsg.txt', 'rb') as f:
+		mycsv = csv.reader(f)
+		mycsv = list(mycsv)
+		features = [x for x in mycsv[0]]
+		#print 'len: ',len(mycsv)
+	mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
+	sfeature = ['r'+x for x in mainfeature]
+	rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
+	sfeatIdx = [features.index(x) for x in sfeature]
+	rfeatIdx = [features.index(x) for x in rfeature]
+	mycsv = numpy.array(mycsv[1:])
+	mycsv = preprocessDataValue(mycsv, features,\
+							createFeatures(['rWeight','sWeight'], [10,10]))
+	#count the number of connections
+	degrees = {}
+	sfeatIdx = [features.index(x) for x in sfeature]
+	rfeatIdx = [features.index(x) for x in rfeature]
+	
+	for row in mycsv:
+		sgroup = '_'.join(list(row[sfeatIdx]))
+		if not sgroup in degrees:
+			degrees[sgroup] = 0
+		rgroup = '_'.join(list(row[rfeatIdx]))
+		if not rgroup in degrees:
+			degrees[rgroup] = 0 # 'reject': 0}
+		if row[features.index('Reply')] == '1':
+			degrees[sgroup] +=1
+			degrees[rgroup] +=1
+		else:
+			pass
+			#degrees[sgroup].reject +=1
+			#degrees[rgroup].reject +=1	
+	sortedkey = sorted(degrees.iteritems(),key = operator.itemgetter(1),reverse=True)
+	#print sortedkey
+	counts = array([x[1] for x in sortedkey])
+	fig = plt.figure()
+	x = numpy.arange(len(counts))
+	summ = sum(counts);
+	if summ==0:
+		print 'no reply'
+		return
+	counts = counts
+	
+	plt.bar(x,counts,color='blue')
+	fig.savefig('./sender_histogram.png')
+	
+print_user_degree()
