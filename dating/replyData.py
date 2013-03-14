@@ -3,7 +3,7 @@ import csv
 import operator
 from datafeature import * #self defined class
 from collections import Counter
-
+import matplotlib.pyplot as plt
 
 def getStrFeatVal(arraydata, featureArray,subfeat):
 	"""
@@ -156,3 +156,49 @@ def get_repPre():
 
 		pass
 	return recPreference
+
+def print_user_degree():
+	features = []
+	with open('../../data/receiveMsg.txt', 'rb') as f:
+		mycsv = csv.reader(f)
+		mycsv = list(mycsv)
+		features = [x for x in mycsv[0]]
+	mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
+	sfeature = ['r'+x for x in mainfeature]
+	rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
+	sfeatIdx = [features.index(x) for x in sfeature]
+	rfeatIdx = [features.index(x) for x in rfeature]
+	mycsv = numpy.array(mycsv[1:])
+	mycsv = preprocessDataValue(mycsv, features,\
+							createFeatures(['rWeight','sWeight'], [10,10]))
+	#count the number of connections
+	degrees = {}
+	sfeatIdx = [features.index(x) for x in sfeature]
+	rfeatIdx = [features.index(x) for x in rfeature]
+	
+	for row in mycsv:
+		sgroup = '_'.join(list(row[sfeatIdx]))
+		if not sgroup in degrees:
+			degrees[sgroup] = {'accept': 0, 'reject':0}
+		rgroup = '_'.joini(list(row[rfeatIdx]))
+		if not rgroup in degrees:
+			degrees[rgroup] = {'accept': 0} # 'reject': 0}
+		if row[features.index('reply')] == 1:
+			degrees[sgroup].accept +=1
+			degrees[rgroup].accept +=1
+		else:
+			pass
+			#degrees[sgroup].reject +=1
+			#degrees[rgroup].reject +=1	
+	sortedkey = sorted(degrees.iteritems(),key = operator.itemgetter(0),reverse=False)
+	counts = [x[accept] for x in sortedkey]
+	
+	x = arange(len(counts))
+	count = count/sum(count)
+	
+	plt.plot(x,count)
+	plt.show()
+	
+print_user_degree()
+	
+	
