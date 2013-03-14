@@ -4,6 +4,9 @@ import operator
 from datafeature import * #self defined class
 from collections import Counter
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 def getStrFeatVal(arraydata, featureArray,subfeat):
 	"""
