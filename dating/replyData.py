@@ -3,6 +3,9 @@ import csv
 import operator
 from datafeature import * #self defined class
 from collections import Counter
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def getStrFeatVal(arraydata, featureArray,subfeat):
@@ -191,13 +194,13 @@ def print_user_degree():
 			#degrees[sgroup].reject +=1
 			#degrees[rgroup].reject +=1	
 	sortedkey = sorted(degrees.iteritems(),key = operator.itemgetter(0),reverse=False)
-	counts = [x[accept] for x in sortedkey]
-	
+	counts = [x['accept'] for x in sortedkey]
+	fig = plt.figure()
 	x = arange(len(counts))
 	count = count/sum(count)
 	
-	plt.plot(x,count)
-	plt.show()
+	plt.bar(x,count,color='blue')
+	fig.savefig('./reply_histogram.png')
 	
 print_user_degree()
 	
