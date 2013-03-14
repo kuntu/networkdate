@@ -184,22 +184,27 @@ def print_user_degree():
 	for row in mycsv:
 		sgroup = '_'.join(list(row[sfeatIdx]))
 		if not sgroup in degrees:
-			degrees[sgroup] = {'accept': 0, 'reject':0}
+			degrees[sgroup] = 0
 		rgroup = '_'.join(list(row[rfeatIdx]))
 		if not rgroup in degrees:
-			degrees[rgroup] = {'accept': 0} # 'reject': 0}
+			degrees[rgroup] = 0 # 'reject': 0}
 		if row[features.index('Reply')] == 1:
-			degrees[sgroup].accept +=1
-			degrees[rgroup].accept +=1
+			degrees[sgroup] +=1
+			degrees[rgroup] +=1
 		else:
 			pass
 			#degrees[sgroup].reject +=1
 			#degrees[rgroup].reject +=1	
 	sortedkey = sorted(degrees.iteritems(),key = operator.itemgetter(0),reverse=False)
-	counts = [x['accept'] for x in sortedkey]
+	#print sortedkey
+	counts = array([x[1] for x in sortedkey])
 	fig = plt.figure()
-	x = arange(len(counts))
-	count = count/sum(count)
+	x = numpy.arange(len(counts))
+	sum = sum(counts);
+	if sum==0:
+		print 'no reply'
+		return
+	counts = counts/sum
 	
 	plt.bar(x,count,color='blue')
 	fig.savefig('./reply_histogram.png')
