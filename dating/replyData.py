@@ -34,7 +34,7 @@ def createFeatures(fNameArray, valueInterval=None, valueMin = None):
 			valueMin = [0 for x in fNameArray]
 		
 		for i in xrange(len(fNameArray)):
-			print i, len(fNameArray), len(valueMin), len(valueInterval)
+			#print i, len(fNameArray), len(valueMin), len(valueInterval)
 			features.append( DataFeature(fNameArray[i],valueMin[i],valueInterval[i]))
 	return features
 
@@ -50,7 +50,7 @@ def preprocessDataValue(dataarray,allFeatNameArray, modiFeat):
 	newData = None
 	for x in modiFeat:
 		idx = allFeatNameArray.index(x.name)
-		print x.name,':', idx,'\n\t array length:',len(dataarray[0])	
+		#print x.name,':', idx,'\n\t array length:',len(dataarray[0])	
 		dataarray[:, idx] = (dataarray[:, idx].astype(int) - x.minVal)/x.intv
 	return dataarray
 
@@ -200,11 +200,11 @@ def print_user_degree():
 	counts = array([x[1] for x in sortedkey])
 	fig = plt.figure()
 	x = numpy.arange(len(counts))
-	sum = sum(counts);
-	if sum==0:
+	summ = sum(counts);
+	if summ==0:
 		print 'no reply'
 		return
-	counts = counts/sum
+	counts = counts/summ
 	
 	plt.bar(x,count,color='blue')
 	fig.savefig('./reply_histogram.png')
