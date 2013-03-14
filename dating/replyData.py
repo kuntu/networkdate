@@ -188,14 +188,14 @@ def print_user_degree():
 		rgroup = '_'.join(list(row[rfeatIdx]))
 		if not rgroup in degrees:
 			degrees[rgroup] = 0 # 'reject': 0}
-		if row[features.index('Reply')] == 1:
+		if row[features.index('Reply')] == '1':
 			degrees[sgroup] +=1
 			degrees[rgroup] +=1
 		else:
 			pass
 			#degrees[sgroup].reject +=1
 			#degrees[rgroup].reject +=1	
-	sortedkey = sorted(degrees.iteritems(),key = operator.itemgetter(0),reverse=False)
+	sortedkey = sorted(degrees.iteritems(),key = operator.itemgetter(1),reverse=True)
 	#print sortedkey
 	counts = array([x[1] for x in sortedkey])
 	fig = plt.figure()
@@ -204,9 +204,9 @@ def print_user_degree():
 	if summ==0:
 		print 'no reply'
 		return
-	counts = counts/summ
+	counts = counts
 	
-	plt.bar(x,count,color='blue')
+	plt.bar(x,counts,color='blue')
 	fig.savefig('./reply_histogram.png')
 	
 print_user_degree()
