@@ -49,7 +49,8 @@ def preprocessDataValue(dataarray,allFeatNameArray, modiFeat):
 	"""
 	newData = None
 	for x in modiFeat:
-		idx = allFeatNameArray.index(x.name)		
+		idx = allFeatNameArray.index(x.name)
+		print x.name,':', idx,'\n\t array length:',len(dataarray[0])	
 		dataarray[:, idx] = (dataarray[:, idx].astype(int) - x.minVal)/x.intv
 	return dataarray
 
@@ -166,6 +167,7 @@ def print_user_degree():
 		mycsv = csv.reader(f)
 		mycsv = list(mycsv)
 		features = [x for x in mycsv[0]]
+		#print 'len: ',len(mycsv)
 	mainfeature = ["age","Weight","PhotoCnt","NewIncome"]
 	sfeature = ['r'+x for x in mainfeature]
 	rfeature = ["sPhotoCnt","sage","sNewIncome","sWeight"]
