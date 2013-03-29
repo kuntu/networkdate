@@ -75,7 +75,7 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 	for i in xrange(len(dataarray)):
 		sgroup = '_'.join(list(dataarray[i][sfeaIdx]))
 		if not sgroup in commu:
-			commu[sgroup] ={}
+			commu[sgroup] = {}
 		rgroup = '_'.join(list(dataarray[i][rfeaIdx]))		
 		if not rgroup in commu[sgroup]:			
 			commu[sgroup][rgroup]={'accept':0.001,'reject':0.001}

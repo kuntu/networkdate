@@ -1,14 +1,15 @@
 import numpy
 import csv
 import operator
-from datafeature import * #self defined class
+from datafeature import *  #self defined class
 from collections import Counter
 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-def getStrFeatVal(arraydata, featureArray,subfeat):
+
+def getStrFeatVal(arraydata, featureArray, subfeat):
 	"""
 	arraydata: numpy array of the data
 	featureArray: string array of all the features for the arraydata
@@ -182,12 +183,14 @@ def print_user_degree():
 		sgroup = '_'.join(list(row[sfeatIdx]))
 		if not sgroup in degrees:
 			degrees[sgroup] = 0
+		"""
 		rgroup = '_'.join(list(row[rfeatIdx]))
 		if not rgroup in degrees:
 			degrees[rgroup] = 0 # 'reject': 0}
 		if row[features.index('Reply')] == '1':
+		"""
 			degrees[sgroup] +=1
-			degrees[rgroup] +=1
+			# degrees[rgroup] +=1
 		else:
 			pass
 			#degrees[sgroup].reject +=1
