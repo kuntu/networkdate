@@ -1,7 +1,7 @@
 import numpy
 import csv
 import operator
-from datafeature import *  #self defined class
+from datafeature import *   # self defined class
 from collections import Counter
 
 import matplotlib
@@ -20,10 +20,7 @@ def getStrFeatVal(arraydata, featureArray, subfeat):
 	return ['-'.join(x) for x in tmpArray]
 
 
-
-
-
-def createFeatures(fNameArray, valueInterval=None, valueMin = None):
+def createFeatures(fNameArray, valueInterval=None, valueMin=None):
 	"""
 	create an array of DataFeature objects
 	"""
@@ -33,24 +30,23 @@ def createFeatures(fNameArray, valueInterval=None, valueMin = None):
 	else:
 		if valueMin is None:
 			valueMin = [0 for x in fNameArray]
-		
 		for i in xrange(len(fNameArray)):
 			print i, len(fNameArray), len(valueMin), len(valueInterval)
-			features.append( DataFeature(fNameArray[i],valueMin[i],valueInterval[i]))
+			features.append(DataFeature(fNameArray[i], valueMin[i], valueInterval[i]))
 	return features
 
-def preprocessDataValue(dataarray,allFeatNameArray, modiFeat):
+
+def preprocessDataValue(dataarray, allFeatNameArray, modiFeat):
 	"""
-	This function modify the values of features-column in the dataarray, e.g. the age 18 could be mapped
-	 to type 1, age 24 mapped to type 2 ...
-	 
+	This function modify the values of features-column in the dataarray,
+	e.g. the age 18 could be mapped	 to type 1, age 24 mapped to type 2 ...
 	dataarray: multi-dimestion array data
 	allFeatNameArray: a string array containing the names of all features
 	modiFeat: a DataFeature-object array, each element in the array
 	"""
 	newData = None
 	for x in modiFeat:
-		idx = allFeatNameArray.index(x.name)		
+		idx = allFeatNameArray.index(x.name)
 		dataarray[:, idx] = (dataarray[:, idx].astype(int) - x.minVal)/x.intv
 	return dataarray
 
@@ -59,8 +55,7 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 	"""
 	refine data
 	1.for each sender, has such following structure:
-		sgroup={ #type of the person who receive a message,  
-		
+		sgroup={ #type of the person who receive a message,
 				sender1Type={
 					accept: # message reply to the sender who has sender1Type
 					reject: # message didn't reply}
@@ -75,15 +70,15 @@ def countCommu(dataarray, feats, sfeats, rfeats):
 	for i in xrange(len(dataarray)):
 		sgroup = '_'.join(list(dataarray[i][sfeaIdx]))
 		if not sgroup in commu:
-			commu[sgroup] ={}
-		rgroup = '_'.join(list(dataarray[i][rfeaIdx]))		
-		if not rgroup in commu[sgroup]:			
-			commu[sgroup][rgroup]={'accept':0.001,'reject':0.001}
+			commu[sgroup] = {}
+		rgroup = '_'.join(list(dataarray[i][rfeaIdx]))
+		if not rgroup in commu[sgroup]:
+			commu[sgroup][rgroup] = {'accept': 0.001, 'reject': 0.001}
 			#commu[sid]['rec'][rid]['rpl'] = 0
-		if dataarray[i][repIdx]=='0':
-			commu[sgroup][rgroup]['reject'] +=1
+		if dataarray[i][repIdx] == '0':
+			commu[sgroup][rgroup]['reject'] += 1
 		else:
-			commu[sgroup][rgroup]['accept'] +=1
+			commu[sgroup][rgroup]['accept'] += 1
 	return commu
 
 
@@ -96,8 +91,10 @@ with open('replydata.csv','wb') as csvfile:
 			(cc[x]['rec'][i]['accept']/(cc[x]['rec'][i]['accept']+cc[x]['rec'][i]['reject'])))
 		csvfile.write(row+'\n')
 """
+
+
 def print_sendData():
-	with open('senderFreq.csv','wb') as csvfile:
+	with open('senderFreq.csv', 'wb') as csvfile:
 		for i in xrange(len(order)):
 			row = order[i]+'\t'+str(len(cc[order[i]]))+'\t'
 			for j in cc[order[i]]:
