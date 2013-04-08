@@ -301,12 +301,14 @@ if __name__ == '__main__':
 
     beta = 0.01 * V
     n = ones(V) / V
-
+    print len(corpus), len(corpus.vocab)
+    for doc in corpus:
+        print doc.name+':'+str(len(doc.w))
     mm = MixtureModel(train_corpus, alpha, m, beta, n)
     
-    mm.gibbs(num_itns=25, random_seed=1000)
+#    mm.gibbs(num_itns=25, random_seed=1000)
 #    mm.save('model.dat')
 
 #    mm = MixtureModel.load('model.dat')
 #    print 'begin'
-    print mm.log_predictive_prob(test_corpus, num_samples=5)
+#    print mm.log_predictive_prob(test_corpus, num_samples=5)

@@ -70,7 +70,9 @@ def dataToCopus(arraydata, feat, sfeat, rfeat, newcsvfile):
 				outData[sender] = sender+'\t'
 			receiver = '_'.join(list(row[rfidx]))
 			outData[sender] = ' '.join([outData[sender], receiver])
-		for key in outData:
+		keys = [x for x in outData]
+		keys.sort()
+		for key in keys:
 			outfile.write(outData[key]+'\n')
 
 
