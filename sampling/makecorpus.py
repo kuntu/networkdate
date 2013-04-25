@@ -12,8 +12,7 @@ selected.insert(len(rFeatWord), 'sender')
 selected.insert(0, 'receiver')
 selected.append('Reply')
 data = subMatrix(data, allfeats, selected)
-print data[0]
 data = preprocessDataValue(data, selected, ['sage', 'sHeight', 'rage', \
 	'rHeight'],	[5, 5, 5, 5], [0, 100, 0, 100])
-#dataToCopus(data, selected, sFeatWord, rFeatWord, '../../data/newCorpus.csv')
+dataToCopus(data, selected, sFeatWord, rFeatWord, '../../data/newCorpus.csv')
 print selected, '\n', data[0]

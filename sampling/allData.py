@@ -64,16 +64,26 @@ def dataToCopus(arraydata, feat, sfeat, rfeat, newcsvfile):
 		sfidx = [feat.index(x) for x in sfeat]
 		rfidx = [feat.index(x) for x in rfeat]
 		outData = {}
+		typeCount = {}
+		senderID = {}
 		for row in arraydata:
 			sender = '_'.join(list(row[sfidx]))
+			sendername = row[feat.index('sender')]
 			if not sender in outData:
 				outData[sender] = sender+'\t'
+				typeCount[sender] = 1
+				senderID[sendername] = 1
+			elif not sendername in senderID:
+				senderID[sendername] = 1
+				typeCount[sender] += 1
 			receiver = '_'.join(list(row[rfidx]))
 			outData[sender] = ' '.join([outData[sender], receiver])
 		keys = [x for x in outData]
 		keys.sort()
-		for key in keys:
-			outfile.write(outData[key]+'\n')
+		with open(newcsvfile+'.csv', 'wb') as outfile_count:
+			for key in keys:
+				outfile.write(outData[key]+'\n')
+				outfile_count.write(key+'\t'+str(typeCount[key])+'\t'+str(typeCount[key])+'\n')
 
 
 def preprocessDataValue(dataarray, allFeatNameArray, modiFeatName, intervals, minVals):
