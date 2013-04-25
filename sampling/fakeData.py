@@ -1,6 +1,8 @@
 import numpy as np
 import scipy as sp
 import random as rnd
+from collections import Counter
+
 
 def sample(dist, samplesize=1):
 	"""
@@ -33,17 +35,16 @@ def generateFake(configFile=None):
 	userInfo = {}
 	male = {}
 	female = {}
-	for x in xrange(1, 4):
+	for x in xrange(3):
 		male[x] = []
 		female[x] = []
-	for x in xrange(200):  # create users with types
+	for x in xrange(2000):  # create users with types
 		userInfo[x] = []
 		userInfo[x].append(rnd.randint(18, 60))
 		userInfo[x].append(rnd.randint(150, 190))
 		userInfo[x].append(rnd.randint(40, 120))
 		userInfo[x].append(rnd.randint(0, 1))
 		userInfo[x].append(classifyuser(userInfo[x]))
-		print userInfo[x][4]
 		if userInfo[x][3] == 0:
 			male[userInfo[x][4]].append(x)
 		else:
@@ -54,7 +55,8 @@ def generateFake(configFile=None):
 		prefs.append(sp.random.uniform(size=3))
 	with open('../../data/fakePref.txt', 'wb') as prefFile:
 		for x in prefs:
-			prefFile.write('\t'.join(x.astype('|S7'))+'\n')  # '|Sx'--dtype: x is the length
+			# '|Sx'--dtype: x is the length
+			prefFile.write('\t'.join(x.astype('|S7'))+'\n')
 	# assign user type here
 	alluser = set(xrange(100))
 	usergroup = []
@@ -65,21 +67,33 @@ def generateFake(configFile=None):
 	usergroup.append(list(alluser))
 	# generate messages
 	with open('../../data/fakeMsg.csv', 'wb') as fakefile:
-		fakefile.write('sender\tsage\tsHeight\sweight\tstype\tsGender\treceiver\trage\trHeight\trweight\trtype\trGender\treply')
-		for t in xrange(1, 3):
-			for x in xrange(len(male[t])):
-				sender = '\t'.join(userInfo[male[t][x]])
-				msgNum = rnd.randint(0, len(female[1])/2)  # might use power law distribution
+		fakefile.write('sender\tsage\tsHeight\tsweight\tsGender\tstype\treceiver\trage\trHeight\trweight\trGender\trtype\treply\n')
+		for t in xrange(3):
+			for x in male[t]:
+				sender = '\t'.join(str(st) for st in userInfo[x])
+				msgNum = rnd.randint(0, len(female[1])/2)  # migh use power law distribut
 				targettypes = sample(prefs[t], msgNum)
-				pass  # find the method to get a set like random idx
-				tempset = {}
-				for idx in xrange(len(female)):
-					tempset[idx] = set(female[idx])
-				for y in xrange(len(targettypes)):
-					receiver = '\t'.join(userInfo[female[y]])
-					fakefile.write(str(x)+'\t'+sender+'\t'+receiver+'\t'+str(rnd.randint(0, 1)))
-					pass
+				cnt = Counter(targettypes)
+				pass  # find the method to get a set like random dx
+				targets = []
+				for rtype in cnt:
+					targets.extend(rnd.sample(female[rtype], cnt[rtype]))
+				for y in targets:
+					receiver = '\t'.join(str(st) for st in userInfo[y])
+					fakefile.write(str(x)+'\t'+sender+'\t'+str(y)+'\t'+receiver+'\t'+str(rnd.randint(0, 1))+'\n')
 				pass
+			for x in female[t]:
+				sender = '\t'.join(str(st) for st in userInfo[x])
+				msgNum = rnd.randint(0, len(male[1])/2)  # migh use power law distribut
+				targettypes = sample(prefs[t], msgNum)
+				cnt = Counter(targettypes)
+				pass  # find the method to get a set like random dx
+				targets = []
+				for rtype in cnt:
+					targets.extend(rnd.sample(male[rtype], cnt[rtype]))
+				for y in targets:
+					receiver = '\t'.join(str(st) for st in userInfo[y])
+					fakefile.write(str(x)+'\t'+sender+'\t'+str(y)+'\t'+receiver+'\t'+str(rnd.randint(0, 1))+'\n')
 	print len(female[1])
 
 
@@ -87,27 +101,27 @@ def classifyuser(user):
 	if user[0] > 40:
 		if user[1] > 180:
 			if user[2] > 90:
+				return (0)
+			elif user[2] >= 50:
 				return (1)
-			elif user[2] > 50:
-				return (2)
 			else:
-				return (3)
-		if user[1] < 180:
+				return (2)
+		else:
 			if user[2] > 90:
-				return (3)
-			else:
 				return (2)
+			else:
+				return (1)
 	else:
 		if user[1] > 180:
 			if user[2] > 90:
-				return (1)
+				return (0)
 			else:
-				return (2)
-		if user[1] < 180:
+				return (1)
+		else:
 			if user[2] > 90:
-				return (3)
+				return (2)
 			else:
-				return (1)
+				return (0)
 
 #please prepare a config file to run experiments
 generateFake()
