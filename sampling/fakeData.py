@@ -51,12 +51,15 @@ def generateFake(configFile=None):
 			female[userInfo[x][4]].append(x)
 		pass  # random create age height and weight fror each user and classi
 	prefs = []  # initial the user preferences
-	for x in xrange(3):
-		prefs.append(sp.random.uniform(size=3))
+	prefs.append(sp.array([0.7, 0.2, 0.01]))
+	prefs.append(sp.array([0.4, 0.5, 0.05]))
+	prefs.append(sp.array([0.3, 0.01, 0.69]))
+#	for x in xrange(3):
+#		prefs.append(sp.random.uniform(size=3))
 	with open('../../data/fakePref.txt', 'wb') as prefFile:
 		for x in prefs:
 			# '|Sx'--dtype: x is the length
-			prefFile.write('\t'.join(x.astype('|S7'))+'\n')
+			prefFile.write(','.join(x.astype('|S7'))+'\n')
 	# assign user type here
 	alluser = set(xrange(100))
 	usergroup = []
@@ -67,10 +70,10 @@ def generateFake(configFile=None):
 	usergroup.append(list(alluser))
 	# generate messages
 	with open('../../data/fakeMsg.csv', 'wb') as fakefile:
-		fakefile.write('sender\tsage\tsHeight\tsweight\tsGender\tstype\treceiver\trage\trHeight\trweight\trGender\trtype\treply\n')
+		fakefile.write('sender,sage,sHeight,sweight,sGender,stype,receiver,rage,rHeight,rweight,rGender,rtype,Reply\n')
 		for t in xrange(3):
 			for x in male[t]:
-				sender = '\t'.join(str(st) for st in userInfo[x])
+				sender = ','.join(str(st) for st in userInfo[x])
 				msgNum = rnd.randint(0, len(female[1])/2)  # migh use power law distribut
 				targettypes = sample(prefs[t], msgNum)
 				cnt = Counter(targettypes)
@@ -79,11 +82,11 @@ def generateFake(configFile=None):
 				for rtype in cnt:
 					targets.extend(rnd.sample(female[rtype], cnt[rtype]))
 				for y in targets:
-					receiver = '\t'.join(str(st) for st in userInfo[y])
-					fakefile.write(str(x)+'\t'+sender+'\t'+str(y)+'\t'+receiver+'\t'+str(rnd.randint(0, 1))+'\n')
+					receiver = ','.join(str(st) for st in userInfo[y])
+					fakefile.write(str(x)+','+sender+','+str(y)+','+receiver+','+str(rnd.randint(0, 1))+'\n')
 				pass
 			for x in female[t]:
-				sender = '\t'.join(str(st) for st in userInfo[x])
+				sender = ','.join(str(st) for st in userInfo[x])
 				msgNum = rnd.randint(0, len(male[1])/2)  # migh use power law distribut
 				targettypes = sample(prefs[t], msgNum)
 				cnt = Counter(targettypes)
@@ -92,8 +95,8 @@ def generateFake(configFile=None):
 				for rtype in cnt:
 					targets.extend(rnd.sample(male[rtype], cnt[rtype]))
 				for y in targets:
-					receiver = '\t'.join(str(st) for st in userInfo[y])
-					fakefile.write(str(x)+'\t'+sender+'\t'+str(y)+'\t'+receiver+'\t'+str(rnd.randint(0, 1))+'\n')
+					receiver = ','.join(str(st) for st in userInfo[y])
+					fakefile.write(str(x)+','+sender+','+str(y)+','+receiver+','+str(rnd.randint(0, 1))+'\n')
 	print len(female[1])
 
 
