@@ -8,7 +8,7 @@ def makeCorpus(config=None):
 	mod_fMin = None
 	mod_fIntv = None
 	infile = None
-	outfile=None
+	outfile = None
 	if config is None:
 		featsforWords = ['age', 'Height', 'weight', 'Gender']
 		sFeatWord = ['s'+x for x in featsforWords]
