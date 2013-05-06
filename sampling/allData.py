@@ -102,5 +102,16 @@ def preprocessDataValue(dataarray, allFeatNameArray, modiFeatName, intervals, mi
 	return dataarray
 
 
+def selectRowsByVal(dataArray, featIdx, val):
+    return np.array([dataArray[i] for i in xrange(len(dataArray)) if dataArray[i][featIdx] == val])
+   
+
+def isRowMatchVals(row, idxes, vals):
+	ar = row[idxes]==np.array(vals).astype(str)
+	return ar.all()
+
+
+def selectRowsByMultiVal(dataArray,featIdxes, vals):
+	return np.array([dataArray[i] for i in xrange(len(dataArray)) if isRowMatchVals(dataArray[i], featIdxes, vals)])
 #dataToCopus('../../data/receiveMsg.csv',['sender','sage'], ['receiver','rage'], '../../data/testout.txt')
 #age height education city photocnt income career house lovetype
