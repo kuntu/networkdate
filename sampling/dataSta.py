@@ -8,9 +8,10 @@ import collections
 import matplotlib as mpl
 import scipy as sp
 import json
-import matplotlib.pyplot as plt
 import os
-
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 def getFeatDistr(ar, featIdx):
     return collections.Counter(ar[:,featIdx].astype(int))
 
