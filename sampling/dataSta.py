@@ -9,7 +9,7 @@ import matplotlib as mpl
 import scipy as sp
 import json
 import matplotlib.pyplot as plt
-#import os
+import os
 
 def getFeatDistr(ar, featIdx):
     return collections.Counter(ar[:,featIdx].astype(int))
@@ -21,6 +21,7 @@ def randomSelect(cfgfile=None):
     selectedVals = None
     featOfDist = None
     selCondition = False
+    ourdir = '.'
     if cfgfile is not None:
         f = open(cfgfile)
         cfg = json.load(f)
@@ -29,6 +30,9 @@ def randomSelect(cfgfile=None):
         selectedFeats = cfg['selected_feats']
         selectedVals = cfg['selected_vals']
         featOfDist = cfg['key_feat']
+        outdir = cfg['outdir']
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
         pass
     allfeats, data = readcsvfile(inputfile)    
     selFeatIdxes = [allfeats.index(i) for i in selectedFeats]
@@ -60,6 +64,7 @@ def randomSelect(cfgfile=None):
         plt.plot(xaxis, selY/selY.sum(), 'r--', label='with pref')
         plt.plot(xaxis, randY/randY.sum(),'b-', label='random selection')
         plt.legend()
+        plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
     #print os.getcwd()
 randomSelect('../../data/randsel.json')
