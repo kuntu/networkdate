@@ -13,8 +13,11 @@ import matplotlib
 import random as rnd
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+
 def getFeatDistr(ar, featIdx):
-    return collections.Counter(ar[:,featIdx].astype(int))
+    return collections.Counter(ar[:, featIdx].astype(int))
+
 
 def randomSelect(cfgfile=None):
     inpufile = None
@@ -36,10 +39,10 @@ def randomSelect(cfgfile=None):
         if not os.path.exists(outdir):
             os.makedirs(outdir)
         pass
-    allfeats, data = readcsvfile(inputfile)    
+    allfeats, data = readcsvfile(inputfile)
     selFeatIdxes = [allfeats.index(i) for i in selectedFeats]
-    data = selectRowsByVal(data,selFeatIdxes[0],str(selectedVals[0]))
-    selectedData = selectRowsByMultiVal(data,selFeatIdxes,selectedVals)
+    data = selectRowsByVal(data, selFeatIdxes[0], str(selectedVals[0]))
+    selectedData = selectRowsByMultiVal(data, selFeatIdxes, selectedVals)
     print len(data), len(selectedData)
     #sp.array([data[i] for i in xrange(len(data)) if data[i][selFeatIdxes[0]]==str(selectedVals[0])])
     for it in xrange(len(featOfDist)):
@@ -51,11 +54,11 @@ def randomSelect(cfgfile=None):
         selCounts = getFeatDistr(selectedData, idx)
         selX = [x for x in selCounts]
         selX.sort()
-        selYtmp = list([selCounts[x] for x in selX])        
-        xaxis = xrange(randX[0],randX[-1]+1)
+        selYtmp = list([selCounts[x] for x in selX])
+        xaxis = xrange(randX[0], randX[-1]+1)
         selY = sp.zeros(len(xaxis))
         randY = sp.zeros(len(xaxis))
-        for x in xrange(len(selX)):            
+        for x in xrange(len(selX)):
             selY[selX[x]-xaxis[0]] = selYtmp[x]
         for x in xrange(len(randX)):
             randY[randX[x]-xaxis[0]] = randYtmp[x]
@@ -64,7 +67,7 @@ def randomSelect(cfgfile=None):
         plt.xlabel(featOfDist[it])
         plt.ylabel('distribution')
         plt.plot(xaxis, selY/selY.sum(), 'r--', label='with pref')
-        plt.plot(xaxis, randY/randY.sum(),'b-', label='random selection')
+        plt.plot(xaxis, randY/randY.sum(), 'b-', label='random selection')
         plt.legend()
         plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
@@ -92,42 +95,51 @@ def getMarRplRate(cfgfile=None):
         if not os.path.exists(outdir):
             os.makedirs(outdir)
         pass
-    allfeats, data = readcsvfile(inputfile)    
+    allfeats, data = readcsvfile(inputfile)
     selFeatIdxes = [allfeats.index(i) for i in selectedFeats]
-    data = selectRowsByVal(data,selFeatIdxes[0],str(selectedVals[0]))
-    selectedData = selectRowsByMultiVal(data,selFeatIdxes,selectedVals)
+    data = selectRowsByVal(data, selFeatIdxes[0], str(selectedVals[0]))
+    selectedData = selectRowsByMultiVal(data, selFeatIdxes, selectedVals)
     print len(data), len(selectedData)
+    # do sampling with reply probability, sample n times and use average
+    N = 5
+    sampleIdxes = {}
+    sampleSet = set(xrange(len(data)))
+    for x in xrange(N):
+        sampleIdxes[x] = rnd.sample(sampleSet, len(selectedData))
     #sp.array([data[i] for i in xrange(len(data)) if data[i][selFeatIdxes[0]]==str(selectedVals[0])])
-    for it in xrange(1): #len(featOfDist)):
+    for it in xrange(len(featOfDist)):
         idx = allfeats.index(featOfDist[it])
         totalCounts = getFeatDistr(data, idx)
         totalX = [x for x in totalCounts]
         totalX.sort()
+        xaxis = xrange(totalX[0], totalX[-1]+1)
+        # for random sender
+        sampleCounts = getFeatDistr(data[sampleIdxes[0]], idx)
+        for x in xrange(1, N):
+            sampleCounts += getFeatDistr(data[sampleIdxes[x]], idx)
+        samX = [x for x in sampleCounts]
+        samX.sort()
+        samY = sp.zeros(len(xaxis))
+        for x in xrange(len(samX)):
+            samY[samX[x]-xaxis[0]] = float(sampleCounts[samX[x]])/totalCounts[samX[x]]
+        # for selected sender
+        samY /= N
         selCounts = getFeatDistr(selectedData, idx)
         selX = [x for x in selCounts]
         selX.sort()
-        selYtmp = list([selCounts[x] for x in selX])        
-        xaxis = xrange(totalX[0],totalX[-1]+1)
+        
         selY = sp.zeros(len(xaxis))
         print selCounts, totalCounts
         for x in xrange(len(selX)):
-            print x, selX[x],  selCounts[selX[x]], totalCounts[selX[x]]
             selY[selX[x]-xaxis[0]] = float(selCounts[selX[x]])/totalCounts[selX[x]]
-        print selY
-        """
-        randY = sp.zeros(len(xaxis))
-        for x in xrange(len(selX)):            
-            selY[selX[x]-xaxis[0]] = selYtmp[x]
-        for x in xrange(len(randX)):
-            randY[randX[x]-xaxis[0]] = randYtmp[x]
-        #yaxis = [counts[x] for x in xaxis]
-        """
+        print samY
         plt.figure(it)
         plt.xlabel(featOfDist[it])
         plt.ylabel('distribution')
         plt.plot(xaxis, selY, 'r--', label='with pref')
-        #plt.plot(xaxis, randY/randY.sum(),'b-', label='random selection')
+        plt.plot(xaxis, samY, 'b-', label='random selection')
         plt.legend()
         plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
-getMarRplRate("../../data/randsel.json")
+getMarRplRate("../../data/exp/randsel.json")
+
