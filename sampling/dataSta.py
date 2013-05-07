@@ -141,5 +141,5 @@ def getMarRplRate(cfgfile=None):
         plt.legend()
         plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
-getMarRplRate("../../data/exp/randsel.json")
+#getMarRplRate("../../data/exp/randsel.json")
 
