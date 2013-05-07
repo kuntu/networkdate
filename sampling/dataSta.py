@@ -68,4 +68,4 @@ def randomSelect(cfgfile=None):
         plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
     #print os.getcwd()
-randomSelect('../../data/randsel.json')
+#randomSelect('../../data/randsel.json')
