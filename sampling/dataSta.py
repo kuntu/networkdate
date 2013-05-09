@@ -142,3 +142,69 @@ def getMarRplRate(cfgfile=None):
     plt.show()
 #getMarRplRate("../../data/exp/randsel.json")
 
+
+def test1(cfgfile=None):
+    inpufile = None
+    outputfile = None
+    selectedFeats = None
+    selectedVals = None
+    featOfDist = None
+    selCondition = False
+    ourdir = '.'
+    if cfgfile is not None:
+        f = open(cfgfile)
+        cfg = json.load(f)
+        print cfg
+        inputfile = cfg['indir']+'/'+cfg['infile']
+        selectedFeats = cfg['selected_feats']
+        selectedVals = cfg['selected_vals']
+        featOfDist = cfg['key_feat']
+        outdir = cfg['outdir']
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
+        pass
+    allfeats, data = readcsvfile(inputfile)
+    selFeatIdxes = [allfeats.index(i) for i in selectedFeats]
+    data = selectRowsByVal(data, selFeatIdxes[0], str(selectedVals[0]))
+    selectedData = selectRowsByMultiVal(data, selFeatIdxes, selectedVals)
+    print len(data), len(selectedData)
+    # do sampling with reply probability, sample n times and use average
+    N = 5
+    sampleIdxes = {}
+    sampleSet = set(xrange(len(data)))
+    for x in xrange(N):
+        sampleIdxes[x] = rnd.sample(sampleSet, len(selectedData))
+    #sp.array([data[i] for i in xrange(len(data)) if data[i][selFeatIdxes[0]]==str(selectedVals[0])])
+    for it in xrange(1):
+        idx = allfeats.index('sAnimalSign')
+        totalCounts = getFeatDistr(data, idx)
+        totalX = [x for x in totalCounts]
+        totalX.sort()
+        xaxis = xrange(totalX[0], totalX[-1]+1)
+        # for random sender
+        sampleCounts = getFeatDistr(data[sampleIdxes[0]], idx)
+        for x in xrange(1, N):
+            sampleCounts += getFeatDistr(data[sampleIdxes[x]], idx)
+        samX = [x for x in sampleCounts]
+        samX.sort()
+        samY = sp.zeros(len(xaxis))
+        for x in xrange(len(samX)):
+            samY[samX[x]-xaxis[0]] = float(sampleCounts[samX[x]])/totalCounts[samX[x]]
+        # for selected sender
+        samY /= N
+        selCounts = getFeatDistr(selectedData, idx)
+        selX = [x for x in selCounts]
+        selX.sort()
+        print 'sAnimalSign', '-selcounts:', selCounts
+        print 'sampleCounts:', sampleCounts
+        print 'total', totalCounts
+        selY = sp.zeros(len(xaxis))
+        for x in xrange(len(selX)):
+            selY[selX[x]-xaxis[0]] = float(selCounts[selX[x]])/totalCounts[selX[x]]
+        plt.figure(it)
+        plt.xlabel(featOfDist[it])
+        plt.ylabel('distribution')
+        plt.plot(xaxis, selY, 'r--', label='with pref')
+        plt.plot(xaxis, samY, 'b-', label='random selection')
+        plt.legend()
+        plt.savefig(outdir+'/'+featOfDist[it]+'.png')
