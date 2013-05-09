@@ -127,13 +127,11 @@ def getMarRplRate(cfgfile=None):
         selCounts = getFeatDistr(selectedData, idx)
         selX = [x for x in selCounts]
         selX.sort()
-        print 'selcounts', selCounts
-        print 'sampleCounts', sampleCounts
+        print featOfDist[it], '-selcounts:', selCounts
+        print 'sampleCounts:', sampleCounts
         selY = sp.zeros(len(xaxis))
-        print selCounts, totalCounts
         for x in xrange(len(selX)):
             selY[selX[x]-xaxis[0]] = float(selCounts[selX[x]])/totalCounts[selX[x]]
-        print samY
         plt.figure(it)
         plt.xlabel(featOfDist[it])
         plt.ylabel('distribution')
