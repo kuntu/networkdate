@@ -127,7 +127,8 @@ def getMarRplRate(cfgfile=None):
         selCounts = getFeatDistr(selectedData, idx)
         selX = [x for x in selCounts]
         selX.sort()
-        
+        print 'selcounts', selCounts
+        print 'sampleCounts', sampleCounts
         selY = sp.zeros(len(xaxis))
         print selCounts, totalCounts
         for x in xrange(len(selX)):
