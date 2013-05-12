@@ -13,6 +13,7 @@ import matplotlib
 import random as rnd
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 
 def getFeatDistr(ar, featIdx):
@@ -168,3 +169,18 @@ def test1(cfgfile=None):
     data = selectRowsByVal(data, selFeatIdxes[0], str(selectedVals[0]))
     checkcor = [data[x] for x in data if data[x][allfeats.index('sAnimalSign')]==0]
     print checkcor
+
+
+
+
+def getTimePro(cfgfile=None):
+    data = None
+    timeFeats = None
+    regtime = None
+    logtime = None
+    sendtime = None
+    pass  # cfg here
+    seldata = None    
+    for row in xrange(len(data)):
+        for col in xrange(len(timeFeats)):
+            seldata[row][col] = datetime.strptime(seldata[row][col], '%Y-%m-%d %H:%M:%S')
