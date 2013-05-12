@@ -167,7 +167,7 @@ def test1(cfgfile=None):
     allfeats, data = readcsvfile(inputfile)
     selFeatIdxes = [allfeats.index(i) for i in selectedFeats]
     data = selectRowsByVal(data, selFeatIdxes[0], str(selectedVals[0]))
-    checkcor = [data[x] for x in data if data[x][allfeats.index('sAnimalSign')]==0]
+    checkcor = [data[x] for x in xrange(len(data)) if data[x][allfeats.index('sAnimalSign')]== str(0)]
     print checkcor
 
 
