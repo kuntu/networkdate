@@ -14,7 +14,7 @@ import random as rnd
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from datetime import datetime
-import math
+
 
 def getFeatDistr(ar, featIdx):
     return collections.Counter(ar[:, featIdx].astype(int))
@@ -121,7 +121,7 @@ def getMarRplRate(cfgfile=None):
         samX = [x for x in sampleCounts]
         samX.sort()
         samY = sp.zeros(len(xaxis))
-        samYcount = sp.zeros_like(len(samY), dtype='float')
+        samYcount = sp.zeros(len(samY), dtype='float')
         for x in xrange(len(samX)):
             samY[samX[x]-xaxis[0]] = float(sampleCounts[samX[x]])/totalCounts[samX[x]]
             samYcount[samX[x]-xaxis[0]] = totalCounts[samX[x]]
@@ -137,45 +137,16 @@ def getMarRplRate(cfgfile=None):
             selY[selX[x]-xaxis[0]] = float(selCounts[selX[x]])/totalCounts[selX[x]]
         plt.figure(it)
         plt.xlabel(featOfDist[it])
-        plt.ylabel('distribution')
-        plt.plot(xaxis, selY, 'r--', label='with pref')
+        plt.ylabel('distribution')        
         # plt.plot(xaxis, samY, 'b-', label='random selection')
-        samYStd = 1.96*math.sqrt(samY*(1-samY)/samYcount)
-        plt.bar(xaxis, samY, color='r', yerr==samYStd, label='reply Probability')
-        plt.bar(xaxis, 1-samY, color='y', bottom=samY, label='reject Probability')
+        samYStd = 1.96*sp.sqrt(samY*(1-samY)/samYcount)
+        plt.bar(xaxis, samY, color='y', yerr=samYStd, label='reply Probability')
+        #plt.bar(xaxis, 1-samY, color='y', bottom=samY, label='reject Probability')
+        plt.plot(xaxis, selY, 'r--', label='with pref')
         plt.legend()
         plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
 #getMarRplRate("../../data/exp/randsel.json")
-
-
-def test1(cfgfile=None):
-    inpufile = None
-    outputfile = None
-    selectedFeats = None
-    selectedVals = None
-    featOfDist = None
-    selCondition = False
-    ourdir = '.'
-    if cfgfile is not None:
-        f = open(cfgfile)
-        cfg = json.load(f)
-        print cfg
-        inputfile = cfg['indir']+'/'+cfg['infile']
-        selectedFeats = cfg['selected_feats']
-        selectedVals = cfg['selected_vals']
-        featOfDist = cfg['key_feat']
-        outdir = cfg['outdir']
-        if not os.path.exists(outdir):
-            os.makedirs(outdir)
-        pass
-    allfeats, data = readcsvfile(inputfile)
-    selFeatIdxes = [allfeats.index(i) for i in selectedFeats]
-    data = selectRowsByVal(data, selFeatIdxes[0], str(selectedVals[0]))
-    checkcor = [data[x] for x in xrange(len(data)) if data[x][allfeats.index('sAnimalSign')]== str(0)]
-    print checkcor
-
-
 
 
 def getTimePro(cfgfile=None):
