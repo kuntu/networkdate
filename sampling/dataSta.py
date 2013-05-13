@@ -14,7 +14,7 @@ import random as rnd
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from datetime import datetime
-
+import math
 
 def getFeatDistr(ar, featIdx):
     return collections.Counter(ar[:, featIdx].astype(int))
@@ -121,8 +121,10 @@ def getMarRplRate(cfgfile=None):
         samX = [x for x in sampleCounts]
         samX.sort()
         samY = sp.zeros(len(xaxis))
+        samYcount = sp.zeros_like(len(samY), dtype='float')
         for x in xrange(len(samX)):
             samY[samX[x]-xaxis[0]] = float(sampleCounts[samX[x]])/totalCounts[samX[x]]
+            samYcount[samX[x]-xaxis[0]] = totalCounts[samX[x]]
         # for selected sender
         samY /= N
         selCounts = getFeatDistr(selectedData, idx)
@@ -138,8 +140,9 @@ def getMarRplRate(cfgfile=None):
         plt.ylabel('distribution')
         plt.plot(xaxis, selY, 'r--', label='with pref')
         # plt.plot(xaxis, samY, 'b-', label='random selection')
-        plt.bar(xaxis, samY, color='r', yerr='reply Probability')
-        plt.bar(xaxis, 1-samY, color='y', bottom=samY, yerr='reject Probability')
+        samYStd = 1.96*math.sqrt(samY*(1-samY)/samYcount)
+        plt.bar(xaxis, samY, color='r', yerr==samYStd, label='reply Probability')
+        plt.bar(xaxis, 1-samY, color='y', bottom=samY, label='reject Probability')
         plt.legend()
         plt.savefig(outdir+'/'+featOfDist[it]+'.png')
     plt.show()
