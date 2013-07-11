@@ -285,7 +285,7 @@ if __name__ == '__main__':
 
     extra_stopwords = ['answer', 'dont', 'find', 'im', 'information', 'ive', 'message', 'question', 'read', 'science', 'wondering']
 
-    corpus = preprocess('../../data/fakeCorpus.csv')
+    corpus = preprocess('../../data/corp_msChoice.txt')
     train_corpus = corpus[:-100]
     assert train_corpus.vocab == corpus.vocab
 
