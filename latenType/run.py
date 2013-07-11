@@ -7,7 +7,7 @@ from interactive_plot import InteractivePlot
 from iterview import iterview
 from preprocess import preprocess
 from sample import log_sample, sample
-
+#cancel interactive_plot in gibbs() funtion to run remotely
 
 def log_sum_exp(x):
 
@@ -147,8 +147,8 @@ class MixtureModel(object):
 
         log_e = self.log_evidence_corpus_and_z()
 
-        plt = InteractivePlot('Iteration', 'Log Evidence')
-        plt.update_plot(0, log_e)
+        #plt = InteractivePlot('Iteration', 'Log Evidence')
+        #plt.update_plot(0, log_e)
 
         print '\nLog evidence: %s\n' % log_e
         self.print_top_types()
@@ -161,7 +161,7 @@ class MixtureModel(object):
 
             log_e = self.log_evidence_corpus_and_z()
 
-            plt.update_plot(itn, log_e)
+            #plt.update_plot(itn, log_e)
 
             print '\nLog evidence: %s\n' % log_e
             self.print_top_types()
@@ -214,6 +214,7 @@ class MixtureModel(object):
         return pickle.load(file(filename, 'r'))
 
     def save(self, filename):
+        print 'saving file...'
         pickle.dump(self, file(filename, 'wb'))
 
     def log_predictive_prob(self, new_corpus, num_samples):
@@ -293,7 +294,7 @@ if __name__ == '__main__':
     assert test_corpus.vocab == corpus.vocab
 
     V = len(corpus.vocab)
-    T = 10
+    T = 20
 
     alpha = 0.1 * T
     m = ones(T) / T
@@ -303,12 +304,12 @@ if __name__ == '__main__':
     print len(corpus), len(corpus.vocab)
 #    for doc in corpus:
 #        print doc.name+':'+str(len(doc.w))
-#    mm = MixtureModel(train_corpus, alpha, m, beta, n)
+    mm = MixtureModel(train_corpus, alpha, m, beta, n)
     
-#    mm.gibbs(num_itns=25, random_seed=1000)
-#    mm.save('model.dat')
+    mm.gibbs(num_itns=25, random_seed=1000)
+    mm.save('./model.dat')
 
-    mm = MixtureModel.load('model.dat')
+#    mm = MixtureModel.load('model.dat')
     print mm.alpha_m
     print mm.beta
     print 'begin'
