@@ -2,6 +2,5 @@ psmX = c("sage",  "sHeight", "sWeight", "sBodyType", "sBloodType", "sNewOccupati
 psmD = c("sHaveChildren")
 psMY = c("Reply")
 
-
-
+DataPrepare = list()
 
