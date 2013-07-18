@@ -63,6 +63,7 @@ DataPrepare$lda$randomCorpus = function(T,n,D,dlen){
 
 ##just the script
 #x = DataPrepare$lda$randomCorpus(4,500,5000,20)
-#write.table(x$corpus,file='./corp.csv',sep=',',row.names=F,col.names=F)
+#write.table(x$corpus,file='./corp.csv',sep=',',row.names=F,col.names=F,quote=F)
 #write.table(as.data.frame(x$phis),file='./preference.csv',sep=',')
 #write(x$docTypes,file='./userType.txt')
+#write(x$vocab, file='./receivers.txt')
