@@ -4,6 +4,7 @@
 
 DataPrepare = list()
 
+## For LDA model
 DataPrepare$lda = list()
 
 DataPrepare$lda$randomCorpus = function(T,n,D,dlen){
@@ -61,9 +62,75 @@ DataPrepare$lda$randomCorpus = function(T,n,D,dlen){
 
 }
 
-##just the script
+
+##Reading and Writing for file
+DataPrepare$file=list()
+
+DataPrepare$file$readcfg = function(cfgfile){
+	cfg = fromJSON(paste(readLines(cfgfile),collapse=''))
+	#cfg = fromJSON(file='xxx')
+	return(cfg)
+}
+
+##filter data
+DataPrepare$filter = list()
+
+#filter rows
+DataPrepare$filter$selRowsByCnd = function(data, cfg){
+	#filter rows with the conditions in cfg.
+	#returns:
+	#	subset of rows from data,
+	#Paras:
+	#	data: data.frame: 
+	#	cfg:	list. conditions
+	#			cfg$filterLarge: an array of variable names, which require to be larger than some value
+	#			cfg$filterLarVal: an array of variable value, 
+	#				example: cfg$filterLarge=["age"], cfg$filterLarVal = [19], would use filter data[,"age"]>19 to filter
+	#			cfg$filterEq
+	#			cfg$filterEqVal
+	#			cfg$filterSmall
+	#			cfg$filterSmVal
+	##
+	if(!is.null(cfg[['filterLarge']])){
+		valIdx = 0
+		for(var in cfg[['filterLarge']]){
+			valIdx = valIdx +1
+			data = data[which(data[,var]>cfg[['filterLarVal']][valIdx]),]
+		}
+	}
+	#equal condition
+	if(!is.null(cfg[['filterEq']])){
+		valIdx = 0
+		for(var in cfg[['filterEq']]){
+			valIdx = valIdx +1
+			data = data[which(data[,var]==cfg[['filterEqVal']][valIdx]),]
+		}
+	}
+	#smaller condition
+	if(!is.null(cfg[['filterSmall']])){
+		valIdx = 0
+		for(var in cfg[['filterSmall']]){
+			valIdx = valIdx +1
+			data = data[which(data[,var]<cfg[['filterSmVal']][valIdx]),]
+		}
+	}
+	return(data)
+}
+
+##processing data value
+DataPrepare$Disc = list()
+
+##just the script for LDA model
 #x = DataPrepare$lda$randomCorpus(4,500,5000,20)
 #write.table(x$corpus,file='./corp.csv',sep=',',row.names=F,col.names=F,quote=F)
 #write.table(as.data.frame(x$phis),file='./preference.csv',sep=',')
 #write(x$docTypes,file='./userType.txt')
 #write(x$vocab, file='./receivers.txt')
+
+##scripts for pipe process
+rDataToCorpus = function(cfgfile){
+	cfg = DataPrepare$file$readcfg(cfgfile)
+	load(cfg$RData)
+	data = indata[,cfg$selVar]
+	
+}
