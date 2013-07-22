@@ -98,6 +98,7 @@ DataPrepare$filter$selRowsByCnd = function(data, cfg){
 			data = data[which(data[,var]>cfg[['filterLarVal']][valIdx]),]
 		}
 	}
+
 	#equal condition
 	if(!is.null(cfg[['filterEq']])){
 		valIdx = 0
@@ -129,8 +130,11 @@ DataPrepare$Disc = list()
 
 ##scripts for pipe process
 rDataToCorpus = function(cfgfile){
+	print('loading config file...')
 	cfg = DataPrepare$file$readcfg(cfgfile)
 	load(cfg$RData)
 	data = indata[,cfg$selVar]
-	
+	data = DataPrepare$filter$selRowsByCnd(data,cfg)
+	summary(data)
+#	return(data)
 }
