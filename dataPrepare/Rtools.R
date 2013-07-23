@@ -62,6 +62,33 @@ DataPrepare$lda$randomCorpus = function(T,n,D,dlen){
 
 }
 
+#change data.frame to LDA corpus
+DataPrepare$lda$dataToCorpus = function(featTb,docF,file='./defaultCorpus.txt'){
+	##
+	#intro:
+	#	concatenate feature values of each row to a string. This kind of String
+	#	is regarded as a word in LDA model.
+	#	function will return a list. with names as the docID and each doc contains a
+	#	supper long string. This long string is the concateneted words seperated by ' '
+	#paraM"
+	#	featTb: data.frame. contain the refined values of all the features
+	#	docF: factor: contain the doc IDs for each row. strings in rows with the same ID will
+	#		be group together. The same way as words in the same doc should be group together
+	#	file: string: the output file of the 'ready-to-use' corpus. in each row of 
+	#		the file. format is 'docID, word1 word2 ...'. words are seperated by space, and 
+	#		column is splited by ','
+	##
+	target = apply(featTb, 1, paste, collapse='_')	
+	targUser = docF  #factor(indata[splIdx$mSenderIdx,'sender'])
+	tmpcorpus = split(target,targUser)
+	#concatenate each element to a long string in the tmpcorpus, with ' '.
+	tmpcorpus = lapply(tmpcorpus, paste, collapse=' ')
+	print(levels(docF))
+	idx = cbind('ID',paste(names(featTb),collapse='_'))
+	write.table(rbind(idx,t(rbind(names(tmpcorpus),tmpcorpus))),file,row.names=F,col.names=F,sep=',')
+	return(tmpcorpus)
+}
+
 
 ##Reading and Writing for file
 DataPrepare$file=list()
@@ -121,6 +148,33 @@ DataPrepare$filter$selRowsByCnd = function(data, cfg){
 ##processing data value
 DataPrepare$Disc = list()
 
+#discretize variables
+DataPrepare$Disc$discretize = function(data, cfg){
+	##discretize variables in the data, given the DiscVar and the intervals in the cfg
+	#	use findInterval() to discretize
+	#returns
+	#	a new data.frame withe discretized values
+	#Para:
+	#	data: data.frame:	the data where variables are to be discretized
+	#	cfg:	list:		the config read from json. should contain the "DiscVar" and "DiscVarVal"
+	#			cfg$DiscVar:(vector)	the names of variables that are to discretized
+	#			cfg$DiscVarVal:	(list)	intervals for each variables. the names of the element are the names in the DiscVar
+	if(!is.null(cfg[['DiscVar']])){
+		if(!is.null(cfg[['DiscVarVal']])){
+			valIdx = 0
+			for(var in cfg[['DiscVar']]){
+				valIdx = valIdx +1
+				data[[var]] = findInterval(data[[var]],cfg[['DiscVarVal']][[var]])
+			}
+			return(data)
+		}
+	}else{
+		print('Cannot discretize variables')
+		return(data)
+	}
+
+}
+
 ##just the script for LDA model
 #x = DataPrepare$lda$randomCorpus(4,500,5000,20)
 #write.table(x$corpus,file='./corp.csv',sep=',',row.names=F,col.names=F,quote=F)
@@ -135,6 +189,9 @@ rDataToCorpus = function(cfgfile){
 	load(cfg$RData)
 	data = indata[,cfg$selVar]
 	data = DataPrepare$filter$selRowsByCnd(data,cfg)
-	summary(data)
-#	return(data)
+	data = DataPrepare$Disc$discretize(data,cfg)
+	IDf = factor(indata[,cfg$IDVar])
+	print(summary(data))
+	corpus = DataPrepare$lda$dataToCorpus(data,IDf,file='./tmpcorpus.txt')
+	return(data)
 }
