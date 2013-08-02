@@ -83,7 +83,7 @@ DataPrepare$lda$dataToCorpus = function(featTb,docF,file='./defaultCorpus.txt'){
 	tmpcorpus = split(target,targUser)
 	#concatenate each element to a long string in the tmpcorpus, with ' '.
 	tmpcorpus = lapply(tmpcorpus, paste, collapse=' ')
-	print(levels(docF))
+	#print(levels(docF))
 	idx = cbind('ID',paste(names(featTb),collapse='_'))
 	write.table(rbind(idx,t(rbind(names(tmpcorpus),tmpcorpus))),file,row.names=F,col.names=F,sep=',')
 	return(tmpcorpus)
@@ -191,7 +191,7 @@ rDataToCorpus = function(cfgfile){
 	IDf = factor(data[,cfg$IDVar])
 	data = data[,cfg$selVar]	
 	data = DataPrepare$Disc$discretize(data,cfg)
-	print(summary(data))
+	#print(summary(data))
 	corpus = DataPrepare$lda$dataToCorpus(data,IDf,file='./tmpcorpus.txt')
 	return(data)
 }
