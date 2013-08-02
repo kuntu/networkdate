@@ -187,9 +187,8 @@ rDataToCorpus = function(cfgfile){
 	print('loading config file...')
 	cfg = DataPrepare$file$readcfg(cfgfile)
 	load(cfg$RData)
-	data = indata[,cfg$selVar]
-	data = DataPrepare$filter$selRowsByCnd(data,cfg)
-	data = DataPrepare$Disc$discretize(data,cfg)
+	data = DataPrepare$filter$selRowsByCnd(data,cfg)	
+	data = indata[,cfg$selVar]	data = DataPrepare$Disc$discretize(data,cfg)
 	IDf = factor(indata[,cfg$IDVar])
 	print(summary(data))
 	corpus = DataPrepare$lda$dataToCorpus(data,IDf,file='./tmpcorpus.txt')
