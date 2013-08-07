@@ -183,7 +183,7 @@ DataPrepare$Disc$discretize = function(data, cfg){
 #write(x$vocab, file='./receivers.txt')
 
 ##scripts for pipe process
-rDataToCorpus = function(cfgfile){
+rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt'){
 	print('loading config file...')
 	cfg = DataPrepare$file$readcfg(cfgfile)
 	load(cfg$RData)
@@ -192,6 +192,9 @@ rDataToCorpus = function(cfgfile){
 	data = data[,cfg$selVar]	
 	data = DataPrepare$Disc$discretize(data,cfg)
 	#print(summary(data))
-	corpus = DataPrepare$lda$dataToCorpus(data,IDf,file='./tmpcorpus.txt')
+	if(!is.null(cfg[['outfile']])){
+		outfile = paste(cfg[['outdir']], cfg[['outfile']], sep='/')
+	}
+	corpus = DataPrepare$lda$dataToCorpus(data,IDf,outfile)
 	return(data)
 }
