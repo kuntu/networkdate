@@ -89,7 +89,13 @@ DataPrepare$lda$dataToCorpus = function(featTb,docF,file='./defaultCorpus.txt'){
 
 #feature space to number
 DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
-	data = unique(Data[,selFeat])
+	data = unique(DataPrepare$Disc$discretize(Data[,selFeat],selFeat,discVals))
+	featSpace = list()
+	featSpace$missing = 0
+	for(i in 1:length(data[,1])) {
+		featSpace[[paste(data[i,],collapse='-')]] = i
+	}
+	return(featSpace)
 }
 
 
@@ -162,7 +168,7 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 	#	cfg:	list:		the config read from json. should contain the "DiscVar" and "DiscVarVal"
 	#			cfg$DiscVar:(vector)	the names of variables that are to discretized
 	#			cfg$DiscVarVal:	(list)	intervals for each variables. the names of the element are the names in the DiscVar
-	if(!is.null(discVar){
+	if(!is.null(discVar)){
 		if(!is.null(discVarVal)){
 			valIdx = 0
 			for(var in discVar){
