@@ -1,7 +1,5 @@
 #psmX = c("sage",  "sHeight", "sWeight", "sBodyType", "sBloodType", "sNewOccupation", "sAnimalSign",  "sNewDegree", "sNewIncome", "sNewHousing", "sMarriage",  "sPhysicalLooking", "sLoveType",  "sNewCar", "sPhotoCnt", "rage",  "rHeight", "rWeight", "rBodyType", "rBloodType", "rNewOccupation", "rAnimalSign", "rAstrology",  "rNewDegree", "rNewIncome", "rNewHousing", "rMarriage", "rHaveChildren", "rPhysicalLooking", "rNewCar", "rNewProfessional",   "rPhotoCnt",  "distance", "AgeFit", "HeightFit", "IncomeFit", "DegreeFit", "MarriageFit", "HaveChildrenFit", "HouseFit", "LocationFit",  "ageDif", "heightDif", "weightDif", "boddyTypeDif",  "incomeDif", "housingDif", "marriageDif")
 #psmD = c("sHaveChildren")
-#psMY = c("Reply")
-
 DataPrepare = list()
 
 ## For LDA model
@@ -89,6 +87,11 @@ DataPrepare$lda$dataToCorpus = function(featTb,docF,file='./defaultCorpus.txt'){
 	return(tmpcorpus)
 }
 
+#feature space to number
+DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
+	data = unique(Data[,selFeat])
+}
+
 
 ##Reading and Writing for file
 DataPrepare$file=list()
@@ -149,7 +152,7 @@ DataPrepare$filter$selRowsByCnd = function(data, cfg){
 DataPrepare$Disc = list()
 
 #discretize variables
-DataPrepare$Disc$discretize = function(data, cfg){
+DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 	##discretize variables in the data, given the DiscVar and the intervals in the cfg
 	#	use findInterval() to discretize
 	#returns
@@ -159,13 +162,13 @@ DataPrepare$Disc$discretize = function(data, cfg){
 	#	cfg:	list:		the config read from json. should contain the "DiscVar" and "DiscVarVal"
 	#			cfg$DiscVar:(vector)	the names of variables that are to discretized
 	#			cfg$DiscVarVal:	(list)	intervals for each variables. the names of the element are the names in the DiscVar
-	if(!is.null(cfg[['DiscVar']])){
-		if(!is.null(cfg[['DiscVarVal']])){
+	if(!is.null(discVar){
+		if(!is.null(discVarVal)){
 			valIdx = 0
-			for(var in cfg[['DiscVar']]){
+			for(var in discVar){
 				valIdx = valIdx +1
 				if(var %in% names(data)){
-					data[[var]] = findInterval(data[[var]],cfg[['DiscVarVal']][[var]])
+					data[[var]] = findInterval(data[[var]],discVarVal[[var]])
 				}
 			}
 			return(data)
@@ -192,7 +195,7 @@ rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt'){
 	data = DataPrepare$filter$selRowsByCnd(indata,cfg)
 	IDf = factor(data[,cfg$IDVar])
 	data = data[,cfg$selVar]	
-	data = DataPrepare$Disc$discretize(data,cfg)
+	data = DataPrepare$Disc$discretize(data, cfg[['DiscVar']], cfg[['DiscVarVal']])
 	#print(summary(data))
 	if(!is.null(cfg[['outfile']])){
 		outfile = paste(cfg[['outdir']], cfg[['outfile']], sep='/')
