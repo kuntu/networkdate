@@ -164,7 +164,9 @@ DataPrepare$Disc$discretize = function(data, cfg){
 			valIdx = 0
 			for(var in cfg[['DiscVar']]){
 				valIdx = valIdx +1
-				data[[var]] = findInterval(data[[var]],cfg[['DiscVarVal']][[var]])
+				if(var %in% names(data)){
+					data[[var]] = findInterval(data[[var]],cfg[['DiscVarVal']][[var]])
+				}
 			}
 			return(data)
 		}
