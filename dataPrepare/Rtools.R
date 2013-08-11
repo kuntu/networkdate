@@ -90,12 +90,19 @@ DataPrepare$lda$dataToCorpus = function(featTb,docF,file='./defaultCorpus.txt'){
 #feature space to number
 DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
 	data = unique(DataPrepare$Disc$discretize(Data[,selFeat],selFeat,discVals))
+	summary(data)
 	featSpace = list()
 	featSpace$missing = 0
 	for(i in 1:length(data[,1])) {
-		featSpace[[paste(data[i,],collapse='-')]] = i
+		featSpace[[paste(data[i,],collapse='_')]] = i
 	}
 	return(featSpace)
+}
+
+DataPrepare$lda$getPostTypeProb = function(Data, selFeat){
+	dataf = factor(apply(Data[,selFeat],1, paste, collapse='_'))
+	levels(dataf) = cbind(paste(selFeat, collapse='_'), levels(dataf))
+	
 }
 
 
@@ -176,14 +183,12 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 				if(var %in% names(data)){
 					data[[var]] = findInterval(data[[var]],discVarVal[[var]])
 				}
-			}
-			return(data)
+			}			
 		}
 	}else{
-		print('Cannot discretize variables')
-		return(data)
+		print('Cannot discretize variables')		
 	}
-
+	return(data)
 }
 
 ##just the script for LDA model
