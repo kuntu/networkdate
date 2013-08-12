@@ -100,7 +100,7 @@ DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
 }
 
 DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
-	dataf = factor(apply(Data[,selVar],1,paste,collapse='_'))
+	dataf = factor(apply(Data[,selFeat],1,paste,collapse='_'))
 	typef = factor(data$userType)
 	tb = table(typef,dataf)
 	tb = tb + 1/length(levels(dataf))
@@ -109,11 +109,16 @@ DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
 
 DataPrepare$lda$getTypeProb = function(tab, feat){
 	idx = paste(feat,collapse='_')
-	return(tab[,idx])
+	if(idx %in% colnames(tab)){
+		return(tab[,idx]/sum(tab[,idx]))
+	}else{
+		return(rep(1/length(tab[,1], length(tab[,1]))))
+	}
+	
 }
 
 DataPrepare$lda$getFeatProb = function(tab, type){
-	return(tab[type,])
+	return(tab[type,]/sum(tab[type,]))
 }
 
 
