@@ -99,10 +99,21 @@ DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
 	return(featSpace)
 }
 
-DataPrepare$lda$getPostTypeProb = function(Data, selFeat){
-	dataf = factor(apply(Data[,selFeat],1, paste, collapse='_'))
-	levels(dataf) = cbind(paste(selFeat, collapse='_'), levels(dataf))
-	
+DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
+	dataf = factor(apply(Data[,selVar],1,paste,collapse='_'))
+	typef = factor(data$userType)
+	tb = table(typef,dataf)
+	tb = tb + 1/length(levels(dataf))
+	return(tb)	
+}
+
+DataPrepare$lda$getTypeProb = function(tab, feat){
+	idx = paste(feat,collapse='_')
+	return(tab[,idx])
+}
+
+DataPrepare$lda$getFeatProb = function(tab, type){
+	return(tab[type,])
 }
 
 
