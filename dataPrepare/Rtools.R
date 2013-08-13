@@ -100,6 +100,10 @@ DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
 }
 
 DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
+	if(is.na(Data)){
+		print('data is NA, cannot get type-feature counting table')
+		stop()
+	}
 	dataf = factor(apply(Data[,selFeat],1,paste,collapse='_'))
 	typef = factor(data$userType)
 	tb = table(typef,dataf)
@@ -118,6 +122,7 @@ DataPrepare$lda$getTypeProb = function(tab, feat){
 }
 
 DataPrepare$lda$getFeatProb = function(tab, type){
+	
 	return(tab[type,]/sum(tab[type,]))
 }
 
