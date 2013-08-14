@@ -102,10 +102,10 @@ DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
 DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
 	if(is.na(Data)){
 		print('data is NA, cannot get type-feature counting table')
-		stop()
+		return(NA)
 	}
 	dataf = factor(apply(Data[,selFeat],1,paste,collapse='_'))
-	typef = factor(data$userType)
+	typef = factor(Data$userType)
 	tb = table(typef,dataf)
 	tb = tb + 1/length(levels(dataf))
 	return(tb)	
