@@ -220,13 +220,16 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 #write(x$vocab, file='./receivers.txt')
 
 ##scripts for pipe process
-rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt'){
+rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T){
 	print('loading config file...')
 	cfg = DataPrepare$file$readcfg(cfgfile)
 	load(cfg$RData)
 	data = DataPrepare$filter$selRowsByCnd(indata,cfg)
 	IDf = factor(data[,cfg$IDVar])
-	data = data[,cfg$selVar]	
+	data = data[,cfg$selVar]
+	if(!missing){
+		data = na.omit(data)
+	}
 	data = DataPrepare$Disc$discretize(data, cfg[['DiscVar']], cfg[['DiscVarVal']])
 	#print(summary(data))
 	if(!is.null(cfg[['outfile']])){
