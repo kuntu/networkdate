@@ -229,6 +229,7 @@ rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T){
 	data = data[,cfg$selVar]
 	if(!missing){
 		data = na.omit(data)
+		print('omitting missing data')
 	}
 	data = DataPrepare$Disc$discretize(data, cfg[['DiscVar']], cfg[['DiscVarVal']])
 	#print(summary(data))
