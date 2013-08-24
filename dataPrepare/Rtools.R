@@ -182,6 +182,28 @@ DataPrepare$filter$selRowsByCnd = function(data, cfg){
 	return(data)
 }
 
+# change data type for column variables in data.frame according to the config file
+DataPrepare$filter$changeDataType = function(data, dataInfo){
+	## 
+	#Parameter:
+	#	data (data.frame):	the data
+	#	dataInfo(list):		contain arrays of variable names, where each array of variable are to be changed to a different type
+	#		dataInfo$numeic = ["var_to_be_numeric", "var2"]
+	#		dataInfo$datatime = ["var_to_be_datatime","xxxx"]
+	#		
+	#change to numeric
+	for(var in dataInfo$numeric){
+		data[[var]] = as.numeric(as.character(data[[var]]))
+	}
+	#change to time data
+	for(var in dataInfo$datetime){
+		data[[var]] = as.POSIXct(data[[var]], format='%Y-%m-%d %H:%M:%S')
+	}
+
+	return(data)
+}
+
+
 ##processing data value
 DataPrepare$Disc = list()
 
