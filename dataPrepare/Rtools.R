@@ -242,7 +242,7 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 #write(x$vocab, file='./receivers.txt')
 
 ##scripts for pipe process
-rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T){
+DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T){
 	print('loading config file...')
 	cfg = DataPrepare$file$readcfg(cfgfile)
 	load(cfg$RData)
