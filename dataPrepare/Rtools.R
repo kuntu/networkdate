@@ -203,6 +203,13 @@ DataPrepare$filter$changeDataType = function(data, dataInfo){
 	return(data)
 }
 
+DataPrepare$filter$removeCol = function(data, cols){
+	if(node(cols)=='character'){
+		return(data[,-match(cols,names(data))])
+	}else{
+		return(data[,-cols])
+	}
+}
 
 ##processing data value
 DataPrepare$Disc = list()
