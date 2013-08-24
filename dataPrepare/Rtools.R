@@ -205,9 +205,9 @@ DataPrepare$filter$changeDataType = function(data, dataInfo){
 
 DataPrepare$filter$removeCol = function(data, cols){
 	if(mode(cols)=='character'){
-		return(data[,-match(cols,names(data))])
+		return(data[, -na.omit(match(cols,names(data))])
 	}else{
-		return(data[,-cols])
+		return(data[, -cols])
 	}
 }
 
