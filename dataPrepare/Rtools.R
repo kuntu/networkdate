@@ -197,7 +197,7 @@ DataPrepare$filter$changeDataType = function(data, dataInfo){
 	}
 	#change to time data
 	for(var in dataInfo$datetime){
-		data[[var]] = as.POSIXct(data[[var]], format='%Y-%m-%d %H:%M:%S')
+		data[[var]] = as.POSIXct(as.character(data[[var]]), format='%Y-%m-%d %H:%M:%S')
 	}
 
 	return(data)
@@ -205,7 +205,7 @@ DataPrepare$filter$changeDataType = function(data, dataInfo){
 
 DataPrepare$filter$removeCol = function(data, cols){
 	if(mode(cols)=='character'){
-		return(data[, -na.omit(match(cols,names(data))])
+		return(data[, -na.omit(match(cols,names(data)))])
 	}else{
 		return(data[, -cols])
 	}
