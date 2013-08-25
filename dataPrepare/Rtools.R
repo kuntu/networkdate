@@ -211,6 +211,16 @@ DataPrepare$filter$removeCol = function(data, cols){
 	}
 }
 
+# detect NA values
+DataPrepare$filter$detectNA = function(data, NAdetect){
+	for(var in names(NAdetect$smallVar)){
+		data[which(data[[var]] < NAdetect$smallVar[[var]]), var] = NA
+	}
+	for(var in names(NAdetect$largeVar)){
+		data[which(data[[var]] > NAdetect$largeVar[[var]]), var] = NA
+	}
+}
+
 ##processing data value
 DataPrepare$Disc = list()
 
