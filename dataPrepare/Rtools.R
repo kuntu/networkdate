@@ -219,6 +219,7 @@ DataPrepare$filter$detectNA = function(data, NAdetect){
 	for(var in names(NAdetect$largeVar)){
 		data[which(data[[var]] > NAdetect$largeVar[[var]]), var] = NA
 	}
+	return(data)
 }
 
 ##processing data value
