@@ -59,7 +59,7 @@ def preprocess(filename, stopword_filename=None, extra_stopwords=None):
 
     corpus = Corpus()
 
-    for fields in reader(open(filename), delimiter='\t'):
+    for fields in reader(open(filename), delimiter=','):
         corpus.add(fields[0], tokenize(fields[-1], stopwords))
 
     corpus.freeze()
