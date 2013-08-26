@@ -264,7 +264,7 @@ DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=
 	cfg = DataPrepare$file$readcfg(cfgfile)
 	load(cfg$RData)
 	data = DataPrepare$filter$selRowsByCnd(data,cfg)
-	IDf = factor(data[,cfg$IDVar])
+	IDf = factor(data[[cfg$IDVar]])
 	data = data[,cfg$selVar]
 	if(!missing){
 		data = na.omit(data)
