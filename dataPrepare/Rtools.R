@@ -89,6 +89,16 @@ DataPrepare$lda$dataToCorpus = function(featTb,docF,file='./defaultCorpus.txt'){
 
 #feature space to number
 DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
+	##
+	#Intro:
+	#	match each feature vector to a number. (e.g age=20,hight=170 is represented as 20-170, then finally
+	#	match to a number n
+	#return:
+	#	a dictionary-like list.
+	#argument:
+	#	Data(data.frame): 		feature value of users
+	#	selFeat(list of string):feature names to be selected 
+	#	discVals:				intevals to discretize the selected features.
 	data = unique(DataPrepare$Disc$discretize(Data[,selFeat],selFeat,discVals))
 	summary(data)
 	featSpace = list()
@@ -99,7 +109,18 @@ DataPrepare$lda$featSpace = function(Data, selFeat, discVals){
 	return(featSpace)
 }
 
+
 DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
+	## Count the number of users who belongs to user type t and has feature values (xx-xx-xx), 0-count
+	#	cell in the table will be smoothed with a small value.
+	#	This will server as the max expectation for guessing a user's type given his features.
+	#return (table):	
+	#	the counts of number of users of  user type t ans with a certain features. 
+	#	e.g. tb[1,2] = 3 means there are 3 users who belong to user type 1 and has a combination of 
+	#	feature values matching names(tb)[2]
+	#arguemnt:
+	#	Data(data.frame): user features and user type.
+	#	selFeat(list):	names of selected features for 
 	if(is.na(Data)){
 		print('data is NA, cannot get type-feature counting table')
 		return(NA)
@@ -111,7 +132,15 @@ DataPrepare$lda$getTypeFeatTab = function(Data, selFeat){
 	return(tb)	
 }
 
+
 DataPrepare$lda$getTypeProb = function(tab, feat){
+	##Intro:
+	#	get the probabilities of all the user types given the feature values
+	#return:(vector)	
+	#	the categorical distribution of the user types given the feature values
+	#arguement:
+	#	tab(table):	from DataPrepare$lda$getTypeTab()
+	#	feat(vector):	feature values
 	idx = paste(feat,collapse='_')
 	if(idx %in% colnames(tab)){
 		return(tab[,idx]/sum(tab[,idx]))
@@ -122,7 +151,12 @@ DataPrepare$lda$getTypeProb = function(tab, feat){
 }
 
 DataPrepare$lda$getFeatProb = function(tab, type){
-	
+	##Intro:
+	#	get the categorical distribution over the feature values given a use type
+	#return:
+	#	the distribution
+	#arguement:
+	#	tab(table): counts of the number of users wiht usertyp-feature
 	return(tab[type,]/sum(tab[type,]))
 }
 
@@ -131,6 +165,12 @@ DataPrepare$lda$getFeatProb = function(tab, type){
 DataPrepare$file=list()
 
 DataPrepare$file$readcfg = function(cfgfile){
+	##Intro:
+	#	read config file
+	#argument:
+	#	cfgfile(string):	filename
+	#return:
+	#	cfg(list):	all kinds of parameters for a program/experiment to run.
 	cfg = fromJSON(paste(readLines(cfgfile),collapse=''))
 	#cfg = fromJSON(file='xxx')
 	return(cfg)
@@ -141,7 +181,7 @@ DataPrepare$filter = list()
 
 #filter rows
 DataPrepare$filter$selRowsByCnd = function(data, cfg){
-	#filter rows with the conditions in cfg.
+	##filter rows with the conditions in cfg.
 	#returns:
 	#	subset of rows from data,
 	#Paras:
@@ -204,6 +244,7 @@ DataPrepare$filter$changeDataType = function(data, dataInfo){
 }
 
 DataPrepare$filter$removeCol = function(data, cols){
+	## remove columns in a dataframe by name or by column number.
 	if(mode(cols)=='character'){
 		return(data[, -na.omit(match(cols,names(data)))])
 	}else{
@@ -211,8 +252,19 @@ DataPrepare$filter$removeCol = function(data, cols){
 	}
 }
 
-# detect NA values
+# detect values that make no sense and set it ot NA
 DataPrepare$filter$detectNA = function(data, NAdetect){
+	## set some value in the data to be NA according to the variable and value in NAdetect
+	#	set values to NA if a variable is smaller or larger than a certain value. This is useful
+	#	for multiple negative values of a variable that don't make sense at all
+	#argument(data):
+	#	data(data.frame):	data
+	#	NAdetect(list):
+	#		$smallVar(list):	the threshold of variable values. Any value smaller than it 
+	#							will make no sense(e.g. age=18, then age=2<18 would make no sense ) 
+	#		$largeVar(list):	similar with smallVar
+	#return:
+	#	refined data.frame
 	for(var in names(NAdetect$smallVar)){
 		data[which(data[[var]] < NAdetect$smallVar[[var]]), var] = NA
 	}
@@ -233,7 +285,7 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 	#	a new data.frame withe discretized values
 	#Para:
 	#	data: data.frame:	the data where variables are to be discretized
-	#	cfg:	list:		the config read from json. should contain the "DiscVar" and "DiscVarVal"
+	#	cfg(list):			the config read from json. should contain the "DiscVar" and "DiscVarVal"
 	#			cfg$DiscVar:(vector)	the names of variables that are to discretized
 	#			cfg$DiscVarVal:	(list)	intervals for each variables. the names of the element are the names in the DiscVar
 	if(!is.null(discVar)){
@@ -261,21 +313,42 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 
 ##scripts for pipe process
 DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T){
+	## read data in R workspace and convert it to a corpus with a 'document, word1 word2, ...., wordn' format. save
+	#	it to a file named 'outfile'
+	#return:
+	#	the corpus
+	#arguement:
+	#	cfgfile(string)	:	path to the json file. this file contains all the config parameters.
+	#						It contains:
+	#							1)$RData:	the R work space file containing the "data" variable
+	#							2)$IDVar:	the variable serving as a document in the corpus
+	#							3)$selVar:	feature variables that combine as a word
+	#							4)$DiscVar, $DiscVarVal: variables that need to be discretized.
+	#	outfile:	corpus file
+	#	missing:	allow missing data?
 	print('loading config file...')
+	#read config file
 	cfg = DataPrepare$file$readcfg(cfgfile)
+	#load variable 'data' from the R workspace file, the data
 	load(cfg$RData)
+	#filer out some rows, e.g. select sender age less than 50 or message sentTime before Dec
 	data = DataPrepare$filter$selRowsByCnd(data,cfg)
+	#choose the variable as document
 	IDf = factor(data[[cfg$IDVar]])
+	#select collum
 	data = data[,cfg$selVar]
+	#missing data
 	if(!missing){
 		data = na.omit(data)
 		print('omitting missing data')
 	}
+	# discretize data values
 	data = DataPrepare$Disc$discretize(data, cfg[['DiscVar']], cfg[['DiscVarVal']])
 	#print(summary(data))
 	if(!is.null(cfg[['outfile']])){
 		outfile = paste(cfg[['outdir']], cfg[['outfile']], sep='/')
 	}
+	#convert the selected data to document - word list format. this will be used in LDA Model
 	corpus = DataPrepare$lda$dataToCorpus(data,IDf,outfile)
 	return(data)
 }
