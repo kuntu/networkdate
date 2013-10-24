@@ -213,6 +213,12 @@ DataPrepare$filter$removeCol = function(data, cols){
 
 # detect NA values
 DataPrepare$filter$detectNA = function(data, NAdetect){
+	#set invalid value to NA
+	## para
+	#data:	
+	#NAdetect: list
+	#	NAdetect$smallVar:	(list) a list of values, the name is the variable. if the variable is less than the value, it is considered as invalid
+	#	NAdetect$smal
 	for(var in names(NAdetect$smallVar)){
 		data[which(data[[var]] < NAdetect$smallVar[[var]]), var] = NA
 	}
