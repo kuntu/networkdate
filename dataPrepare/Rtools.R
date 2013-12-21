@@ -254,7 +254,6 @@ DataPrepare$filter$removeCol = function(data, cols){
 
 # detect values that make no sense and set it ot NA
 DataPrepare$filter$detectNA = function(data, NAdetect){
-<<<<<<< HEAD
 	#set invalid value to NA
 	## para
 	#data:	
@@ -273,7 +272,6 @@ DataPrepare$filter$detectNA = function(data, NAdetect){
 	#		$largeVar(list):	similar with smallVar
 	#return:
 	#	refined data.frame
->>>>>>> ed37ee9bca82563e46e749f8f53850922cfc0036
 	for(var in names(NAdetect$smallVar)){
 		data[which(data[[var]] < NAdetect$smallVar[[var]]), var] = NA
 	}
