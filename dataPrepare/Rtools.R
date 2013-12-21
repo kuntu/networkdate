@@ -319,7 +319,7 @@ DataPrepare$Disc$discretize = function(data, discVar, discVarVal){
 #write(x$vocab, file='./receivers.txt')
 
 ##scripts for pipe process
-DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T){
+DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=T,data=NULL){
 	## read data in R workspace and convert it to a corpus with a 'document, word1 word2, ...., wordn' format. save
 	#	it to a file named 'outfile'
 	#return:
@@ -336,6 +336,12 @@ DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=
 	print('loading config file...')
 	#read config file
 	cfg = DataPrepare$file$readcfg(cfgfile)
+	if(is.null(data)){
+		#load variable 'data' from the R workspace file, the data
+		load(cfg$RData)
+		#filer out some rows, e.g. select sender age less than 50 or message sentTime before Dec
+		data = DataPrepare$filter$selRowsByCnd(data,cfg)
+	}
 	#load variable 'data' from the R workspace file, the data
 	load(cfg$RData)
 	#filer out some rows, e.g. select sender age less than 50 or message sentTime before Dec
