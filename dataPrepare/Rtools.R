@@ -342,10 +342,6 @@ DataPrepare$rDataToCorpus = function(cfgfile,outfile='./ldacorpus.txt', missing=
 		#filer out some rows, e.g. select sender age less than 50 or message sentTime before Dec
 		data = DataPrepare$filter$selRowsByCnd(data,cfg)
 	}
-	#load variable 'data' from the R workspace file, the data
-	load(cfg$RData)
-	#filer out some rows, e.g. select sender age less than 50 or message sentTime before Dec
-	data = DataPrepare$filter$selRowsByCnd(data,cfg)
 	#choose the variable as document
 	IDf = factor(data[[cfg$IDVar]])
 	#select collum
